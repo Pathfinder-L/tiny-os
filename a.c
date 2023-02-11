@@ -4,8 +4,9 @@ int main()
 {
 
 	// one modify
-	printf("hello world\n");
+	printf("hello wo\n");
 	int a = 0,b = 0;
+	int c= 12;
 	
 	return a + b;
 }
