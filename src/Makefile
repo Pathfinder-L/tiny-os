@@ -1,8 +1,10 @@
 TOOLPATH = ../tools/
+TOP      = $(CURDIR)
 MAKE     = $(TOOLPATH)make.exe -r
 NASK     = $(TOOLPATH)nask.exe
 EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
+BOOTPATH = $(TOP)/boot/
 COPY     = copy
 DEL      = del
 
@@ -11,8 +13,8 @@ default :
 	$(MAKE) img
 
 
-ipl.bin : ipl.nas Makefile
-	$(NASK) ipl.nas ipl.bin ipl.lst
+ipl.bin : $(BOOTPATH)ipl.nas Makefile
+	$(NASK) $(BOOTPATH)ipl.nas ipl.bin ipl.lst
 
 os.img : ipl.bin Makefile
 	$(EDIMG)   imgin:../tools/fdimg0at.tek \
