@@ -1,0 +1,37 @@
+text size :    249(0x000F9)
+data size :      0(0x00000)
+bss  size :      0(0x00000)
+
+0x00000024 : (.text)
+0x00000024 : _HariMain
+0x0000002E : (.text)
+0x0000002E : _puts
+0x0000003C : _io_hlt
+0x0000003E : _io_cli
+0x00000040 : _io_sti
+0x00000042 : _io_stihlt
+0x00000045 : _io_in8
+0x00000050 : _io_in16
+0x0000005C : _io_in32
+0x00000062 : _io_out8
+0x0000006C : _io_out16
+0x00000077 : _io_out32
+0x00000081 : _io_load_eflags
+0x00000084 : _io_store_eflags
+0x0000008B : _load_gdtr
+0x0000009B : _load_idtr
+0x000000AB : _memtest_sub
+0x000000ED : _load_cr0
+0x000000F1 : _store_cr0
+0x000000F9 : _load_tr
+0x000000FF : _farjmp
+0x00000104 : _taskswitch3
+0x0000010C : _taskswitch4
+0x00000114 : (.text)
+0x00000114 : _HariStartup
+0x00000000 : (.data)
+0x00000000 : (.data)
+0x00000000 : (.data)
+0x00000000 : (.bss)
+0x00000000 : (.bss)
+0x00000000 : (.bss)
