@@ -6,6 +6,7 @@ NASK     = $(TOOLPATH)nask.exe
 EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
 BOOTPATH = $(TOP)/boot/
+GRAPHICPATH =$(TOP)/graphic/
 COPY     = copy
 DEL      = del
 
@@ -16,7 +17,8 @@ OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 RULEFILE = $(TOP)\config\haribote.rul
 BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
-OBJS = main.obj $(BOOTPATH)nasfunc.obj
+OBJS = main.obj $(BOOTPATH)nasfunc.obj $(GRAPHICPATH)draw.obj
+
 
 
 %.gas : %.c main.h Makefile

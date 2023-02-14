@@ -35,7 +35,6 @@
 #define PIC1_ICW4        0x00a1
 
 
-
 struct BOOTINFO {
     char cyls;  /*启动区读硬盘何处为止*/
     char leads; /*启动键盘的LED的状态*/
@@ -54,7 +53,25 @@ struct TSS32 {
 };
 
 
-
-
 /*nasfunc.nas*/
 void io_hlt(void);
+
+void io_cli(void);
+
+void io_sti(void);
+
+int io_in8(int port);
+
+void io_out8(int port, int data);
+
+void io_stihlt(void);
+
+int io_load_eflags(void);
+
+void io_store_eflags(int eflags); // 保存 eflags
+
+
+/*graphic.c*/
+void init_palette(void);
+
+void set_palette(int start, int end, unsigned char *rgb);
