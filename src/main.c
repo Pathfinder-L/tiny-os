@@ -13,14 +13,15 @@ extern struct BOOTINFO *bootInfo;
 
 void init() {
     init_palette();
+    init_gdtidt();
 }
 
 
 void HariMain(void) {
     init();
 
-
     init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
+    putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_FFFFFF, "hello");
     for (;;)
         io_hlt();
 }

@@ -4,30 +4,46 @@
      4 00000000                                 [OPTION 1]
      5 00000000                                 [BITS 32]
      6 00000000                                 	EXTERN	_init_palette
-     7 00000000                                 	EXTERN	_bootInfo
-     8 00000000                                 	EXTERN	_init_screen
-     9 00000000                                 	EXTERN	_io_hlt
-    10 00000000                                 [FILE "main.c"]
-    11                                          [SECTION .text]
-    12 00000000                                 	GLOBAL	_init
-    13 00000000                                 _init:
-    14 00000000 55                              	PUSH	EBP
-    15 00000001 89 E5                           	MOV	EBP,ESP
-    16 00000003 5D                              	POP	EBP
-    17 00000004 E9 [00000000]                   	JMP	_init_palette
-    18 00000009                                 	GLOBAL	_HariMain
-    19 00000009                                 _HariMain:
-    20 00000009 55                              	PUSH	EBP
-    21 0000000A 89 E5                           	MOV	EBP,ESP
-    22 0000000C E8 FFFFFFEF                     	CALL	_init
-    23 00000011 A1 [00000000]                   	MOV	EAX,DWORD [_bootInfo]
-    24 00000016 0F BF 50 06                     	MOVSX	EDX,WORD [6+EAX]
-    25 0000001A 52                              	PUSH	EDX
-    26 0000001B 0F BF 50 04                     	MOVSX	EDX,WORD [4+EAX]
-    27 0000001F 52                              	PUSH	EDX
-    28 00000020 FF 70 08                        	PUSH	DWORD [8+EAX]
-    29 00000023 E8 [00000000]                   	CALL	_init_screen
-    30 00000028 83 C4 0C                        	ADD	ESP,12
-    31 0000002B                                 L3:
-    32 0000002B E8 [00000000]                   	CALL	_io_hlt
-    33 00000030 EB F9                           	JMP	L3
+     7 00000000                                 	EXTERN	_init_gdtidt
+     8 00000000                                 	EXTERN	_bootInfo
+     9 00000000                                 	EXTERN	_init_screen
+    10 00000000                                 	EXTERN	_putStr
+    11 00000000                                 	EXTERN	_io_hlt
+    12 00000000                                 [FILE "main.c"]
+    13                                          [SECTION .text]
+    14 00000000                                 	GLOBAL	_init
+    15 00000000                                 _init:
+    16 00000000 55                              	PUSH	EBP
+    17 00000001 89 E5                           	MOV	EBP,ESP
+    18 00000003 E8 [00000000]                   	CALL	_init_palette
+    19 00000008 5D                              	POP	EBP
+    20 00000009 E9 [00000000]                   	JMP	_init_gdtidt
+    21                                          [SECTION .data]
+    22 00000000                                 LC0:
+    23 00000000 68 65 6C 6C 6F 00               	DB	"hello",0x00
+    24                                          [SECTION .text]
+    25 0000000E                                 	GLOBAL	_HariMain
+    26 0000000E                                 _HariMain:
+    27 0000000E 55                              	PUSH	EBP
+    28 0000000F 89 E5                           	MOV	EBP,ESP
+    29 00000011 E8 FFFFFFEA                     	CALL	_init
+    30 00000016 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+    31 0000001C 0F BF 42 06                     	MOVSX	EAX,WORD [6+EDX]
+    32 00000020 50                              	PUSH	EAX
+    33 00000021 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+    34 00000025 50                              	PUSH	EAX
+    35 00000026 FF 72 08                        	PUSH	DWORD [8+EDX]
+    36 00000029 E8 [00000000]                   	CALL	_init_screen
+    37 0000002E 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+    38 00000034 68 [00000000]                   	PUSH	LC0
+    39 00000039 6A 07                           	PUSH	7
+    40 0000003B 6A 00                           	PUSH	0
+    41 0000003D 6A 00                           	PUSH	0
+    42 0000003F 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+    43 00000043 50                              	PUSH	EAX
+    44 00000044 FF 72 08                        	PUSH	DWORD [8+EDX]
+    45 00000047 E8 [00000000]                   	CALL	_putStr
+    46 0000004C 83 C4 24                        	ADD	ESP,36
+    47 0000004F                                 L3:
+    48 0000004F E8 [00000000]                   	CALL	_io_hlt
+    49 00000054 EB F9                           	JMP	L3

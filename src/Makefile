@@ -1,5 +1,4 @@
 TOOLPATH = ../tools/
-DELTOP = D:\OS\src
 TOP      = $(CURDIR)
 MAKE     = $(TOOLPATH)make.exe -r
 NASK     = $(TOOLPATH)nask.exe
@@ -8,6 +7,7 @@ IMGTOL   = $(TOOLPATH)imgtol.com
 BOOTPATH = $(TOP)/boot/
 GRAPHICPATH =$(TOP)/graphic/
 CONFIGPATH = $(TOP)/config/
+DEVICEPATH = $(TOP)/device/
 COPY     = copy
 DEL      = del
 
@@ -18,8 +18,10 @@ OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 RULEFILE = $(TOP)\config\haribote.rul
 BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
-OBJS = main.obj $(BOOTPATH)nasfunc.obj $(GRAPHICPATH)draw.obj $(CONFIGPATH)config.obj
-
+OBJS = main.obj $(BOOTPATH)nasfunc.obj  \
+		 $(CONFIGPATH)config.obj   $(CONFIGPATH)destble.obj  $(CONFIGPATH)fonts.obj \
+		 $(GRAPHICPATH)draw.obj \
+		 $(DEVICEPATH)keyboard.obj $(DEVICEPATH)mouse.obj $(DEVICEPATH)int.obj
 
 
 %.gas : %.c main.h Makefile

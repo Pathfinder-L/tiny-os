@@ -13,6 +13,8 @@
     	GLOBAL	_asm_inthandler27, _asm_inthandler2c
 		GLOBAL _puts,_memtest_sub
 		GLOBAL	_taskswitch3, _taskswitch4 ,_farjmp
+        EXTERN	_inthandler21
+    	EXTERN	_inthandler27, _inthandler2c
 
 [SECTION .text]
 
@@ -99,6 +101,57 @@ _load_idtr:		; void load_idtr(int limit, int addr);
 		MOV		[ESP+6],AX
 		LIDT	[ESP+6]
 		RET
+
+_asm_inthandler21:
+		PUSH	ES
+		PUSH	DS
+		PUSHAD
+		MOV		EAX,ESP
+		PUSH	EAX
+		MOV		AX,SS
+		MOV		DS,AX
+		MOV		ES,AX
+		CALL	_inthandler21
+		POP		EAX
+		POPAD
+		POP		DS
+		POP		ES
+		IRETD
+
+_asm_inthandler27:
+		PUSH	ES
+		PUSH	DS
+		PUSHAD
+		MOV		EAX,ESP
+		PUSH	EAX
+		MOV		AX,SS
+		MOV		DS,AX
+		MOV		ES,AX
+		CALL	_inthandler27
+		POP		EAX
+		POPAD
+		POP		DS
+		POP		ES
+		IRETD
+
+_asm_inthandler2c:
+		PUSH	ES
+		PUSH	DS
+		PUSHAD
+		MOV		EAX,ESP
+		PUSH	EAX
+		MOV		AX,SS
+		MOV		DS,AX
+		MOV		ES,AX
+		CALL	_inthandler2c
+		POP		EAX
+		POPAD
+		POP		DS
+		POP		ES
+		IRETD
+
+
+
 
 _memtest_sub: ; unsigned int memtest_sub(unsigned int start,unsigned int end);
         push edi

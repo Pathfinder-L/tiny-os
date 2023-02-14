@@ -2,7 +2,7 @@
 
 /* 妱傝崬傒娭學 */
 
-#include "../header/main.h"
+#include "../main.h"
 
 extern struct BOOTINFO *bootInfo;
 
@@ -28,8 +28,7 @@ void init_pic(void)
 }
 
 
-void inthandler27(int *esp)
-{
+void inthandler27(int *esp) {
     io_out8(PIC0_OCW2, 0x67);
     return;
 }

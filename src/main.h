@@ -35,6 +35,25 @@
 #define PIC1_ICW3        0x00a1
 #define PIC1_ICW4        0x00a1
 
+/*destble.c*/
+#define ADR_IDT            0x0026f800
+#define LIMIT_IDT        0x000007ff
+#define ADR_GDT            0x00270000
+#define LIMIT_GDT        0x0000ffff
+#define ADR_BOTPAK        0x00280000
+#define LIMIT_BOTPAK    0x0007ffff
+#define AR_DATA32_RW    0x4092
+#define AR_CODE32_ER    0x409a
+#define AR_TSS32        0x0089
+#define AR_INTGATE32    0x008e
+
+/*keyboard.c*/
+#define PORT_KEYSTA                0x0064
+#define KEYSTA_SEND_NOTREADY    0x02
+#define KEYCMD_WRITE_MODE        0x60
+#define KBC_MODE                0x47
+#define PORT_KEYDAT        0x0060
+#define PORT_KEYCMD        0x0064
 
 struct BOOTINFO {
     char cyls;  /*启动区读硬盘何处为止*/
@@ -53,6 +72,17 @@ struct TSS32 {
     int ldtr, iomap;
 };
 
+struct SEGMENT_DESCRIPTOR {
+    short limit_low, base_low;
+    char base_mid, access_right;
+    char limit_high, base_high;
+};
+
+struct GATE_DESCRIPTOR {
+    short offset_low, selector;
+    char dw_count, access_right;
+    short offset_high;
+};
 
 /*nasfunc.nas*/
 void io_hlt(void);
@@ -85,6 +115,9 @@ void init_screen(unsigned char *vram, int x, int y);
 
 void boxfill(unsigned char *vram, int xSize, unsigned char c, int x0, int y0, int x1, int y1);
 
+void putStr(unsigned char *vram, int xSize, int x, int y, char c, unsigned char *s);
+
+void putFont(char *vram, int xSize, int x, int y, char c, char *font);
 
 /*int.c*/
 void init_pic(void);
@@ -92,8 +125,21 @@ void init_pic(void);
 void inthandler27(int *esp);
 
 /*destble.c*/
-void init_GdtIdt(void);
+void init_gdtidt(void);
 
-void set_SegmentDesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
+void set_segmentdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
 
-void set_GateDesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
+void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
+
+/*int.c*/
+void asm_inthandler21(void);
+
+void asm_inthandler27(void);
+
+void asm_inthandler2c(void);
+
+void inthandler21(int *esp);
+
+void inthandler27(int *esp);
+
+void inthandler2c(int *esp);

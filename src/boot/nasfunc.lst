@@ -13,154 +13,207 @@
     13 00000000                                     	GLOBAL	_asm_inthandler27, _asm_inthandler2c
     14 00000000                                 		GLOBAL _puts,_memtest_sub
     15 00000000                                 		GLOBAL	_taskswitch3, _taskswitch4 ,_farjmp
-    16 00000000                                 
-    17                                          [SECTION .text]
+    16 00000000                                         EXTERN	_inthandler21
+    17 00000000                                     	EXTERN	_inthandler27, _inthandler2c
     18 00000000                                 
-    19 00000000                                 
-    20 00000000                                 _puts: ;;void puts(char *s)
-    21 00000000 53                                  push ebx
-    22 00000001 BA 00000002                         mov edx,2
-    23 00000006 8B 5C 24 08                         mov ebx,[esp+8]
-    24 0000000A CD 40                               int 0x40
-    25 0000000C 5B                                  pop ebx
-    26 0000000D C3                                  ret
-    27 0000000E                                 
-    28 0000000E                                 _io_hlt:	; void io_hlt(void);
-    29 0000000E F4                              		HLT
-    30 0000000F C3                              		RET
-    31 00000010                                 
-    32 00000010                                 _io_cli:	; void io_cli(void);
-    33 00000010 FA                              		CLI
-    34 00000011 C3                              		RET
-    35 00000012                                 
-    36 00000012                                 _io_sti:	; void io_sti(void);
-    37 00000012 FB                              		STI
-    38 00000013 C3                              		RET
-    39 00000014                                 
-    40 00000014                                 _io_stihlt:	; void io_stihlt(void);
-    41 00000014 FB                              		STI
-    42 00000015 F4                              		HLT
-    43 00000016 C3                              		RET
-    44 00000017                                 
-    45 00000017                                 _io_in8:	; int io_in8(int port);
-    46 00000017 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    47 0000001B B8 00000000                     		MOV		EAX,0
-    48 00000020 EC                              		IN		AL,DX
-    49 00000021 C3                              		RET
-    50 00000022                                 
-    51 00000022                                 _io_in16:	; int io_in16(int port);
-    52 00000022 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    53 00000026 B8 00000000                     		MOV		EAX,0
-    54 0000002B 66 ED                           		IN		AX,DX
-    55 0000002D C3                              		RET
-    56 0000002E                                 
-    57 0000002E                                 _io_in32:	; int io_in32(int port);
-    58 0000002E 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    59 00000032 ED                              		IN		EAX,DX
-    60 00000033 C3                              		RET
-    61 00000034                                 
-    62 00000034                                 _io_out8:	; void io_out8(int port, int data);
-    63 00000034 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    64 00000038 8A 44 24 08                     		MOV		AL,[ESP+8]		; data
-    65 0000003C EE                              		OUT		DX,AL
-    66 0000003D C3                              		RET
-    67 0000003E                                 
-    68 0000003E                                 _io_out16:	; void io_out16(int port, int data);
-    69 0000003E 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    70 00000042 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
-    71 00000046 66 EF                           		OUT		DX,AX
-    72 00000048 C3                              		RET
-    73 00000049                                 
-    74 00000049                                 _io_out32:	; void io_out32(int port, int data);
-    75 00000049 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
-    76 0000004D 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
-    77 00000051 EF                              		OUT		DX,EAX
-    78 00000052 C3                              		RET
-    79 00000053                                 
-    80 00000053                                 _io_load_eflags:	; int io_load_eflags(void);
-    81 00000053 9C                              		PUSHFD		; PUSH EFLAGS
-    82 00000054 58                              		POP		EAX
-    83 00000055 C3                              		RET
-    84 00000056                                 
-    85 00000056                                 _io_store_eflags:	; void io_store_eflags(int eflags);
-    86 00000056 8B 44 24 04                     		MOV		EAX,[ESP+4]
-    87 0000005A 50                              		PUSH	EAX
-    88 0000005B 9D                              		POPFD		; POP
-    89 0000005C C3                              		RET
-    90 0000005D                                 
-    91 0000005D                                 _load_gdtr:		; void load_gdtr(int limit, int addr);
-    92 0000005D 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
-    93 00000062 66 89 44 24 06                  		MOV		[ESP+6],AX
-    94 00000067 0F 01 54 24 06                  		LGDT	[ESP+6]
-    95 0000006C C3                              		RET
-    96 0000006D                                 
-    97 0000006D                                 _load_idtr:		; void load_idtr(int limit, int addr);
-    98 0000006D 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
-    99 00000072 66 89 44 24 06                  		MOV		[ESP+6],AX
-   100 00000077 0F 01 5C 24 06                  		LIDT	[ESP+6]
-   101 0000007C C3                              		RET
-   102 0000007D                                 
-   103 0000007D                                 _memtest_sub: ; unsigned int memtest_sub(unsigned int start,unsigned int end);
-   104 0000007D 57                                      push edi
-   105 0000007E 56                                      push esi
-   106 0000007F 53                                      push ebx
-   107 00000080 BE AA55AA55                             mov esi, 0xaa55aa55
-   108 00000085 BF 55AA55AA                             mov edi, 0x55aa55aa
-   109 0000008A 8B 44 24 10                             mov eax, [esp + 12 + 4]
-   110 0000008E                                 
-   111 0000008E                                 
-   112 0000008E                                 mts_loop:
-   113 0000008E 89 C3                                   mov ebx,eax
-   114 00000090 81 C3 00000FFC                          add ebx,0xffc
-   115 00000096 8B 13                                   mov edx,[ebx]
-   116 00000098 89 33                                   mov [ebx],esi
-   117 0000009A 83 33 FF                                xor dword [ebx],0xffffffff
-   118 0000009D 3B 3B                                   cmp edi,[ebx]
-   119 0000009F 75 18                                   jne mts_fin
-   120 000000A1 83 33 FF                                xor dword [ebx],0xffffffff
-   121 000000A4 3B 33                                   cmp esi,[ebx]
-   122 000000A6 75 11                                   jne mts_fin
-   123 000000A8 89 13                                   mov [ebx],edx
-   124 000000AA 05 00001000                             add eax,0x1000
-   125 000000AF 3B 44 24 14                             cmp eax,[esp+12+8]
-   126 000000B3 76 D9                                   jbe mts_loop
-   127 000000B5 5B                                      pop ebx
-   128 000000B6 5E                                      pop esi
-   129 000000B7 5F                                      pop edi
-   130 000000B8 C3                                      ret
-   131 000000B9                                 
-   132 000000B9                                 mts_fin:
-   133 000000B9 89 13                                   mov [ebx],edx
-   134 000000BB 5B                                      pop ebx
-   135 000000BC 5E                                      pop esi
-   136 000000BD 5F                                      pop edi
-   137 000000BE C3                                      ret
-   138 000000BF                                 
-   139 000000BF                                 
-   140 000000BF                                 _load_cr0:
-   141 000000BF 0F 20 C0                                mov eax,CR0
-   142 000000C2 C3                                      ret
-   143 000000C3                                 
-   144 000000C3                                 _store_cr0:
-   145 000000C3 8B 44 24 04                             mov eax,[esp+4]
-   146 000000C7 0F 22 C0                                mov cr0,eax
-   147 000000CA C3                                      ret
-   148 000000CB                                 
-   149 000000CB                                 
-   150 000000CB                                 _load_tr: ; // void load_tr(int tr);
-   151 000000CB 0F 00 5C 24 04                      LTR [esp+4]
-   152 000000D0 C3                                  ret
-   153 000000D1                                 
-   154 000000D1                                 _farjmp: ; void farjmp(int eip,int cs)
-   155 000000D1 FF 6C 24 04                             jmp far [esp+4] ; eip,cs
-   156 000000D5 C3                                      ret
-   157 000000D6                                 
-   158 000000D6                                 
-   159 000000D6                                 
-   160 000000D6                                 _taskswitch3:	; void taskswitch3(void);
-   161 000000D6 EA 00000000 0018                		JMP		3*8:0
-   162 000000DD C3                              		RET
-   163 000000DE                                 
-   164 000000DE                                 _taskswitch4:	; void taskswitch4(void);
-   165 000000DE EA 00000000 0020                		JMP		4*8:0
-   166 000000E5 C3                              		RET
+    19                                          [SECTION .text]
+    20 00000000                                 
+    21 00000000                                 
+    22 00000000                                 _puts: ;;void puts(char *s)
+    23 00000000 53                                  push ebx
+    24 00000001 BA 00000002                         mov edx,2
+    25 00000006 8B 5C 24 08                         mov ebx,[esp+8]
+    26 0000000A CD 40                               int 0x40
+    27 0000000C 5B                                  pop ebx
+    28 0000000D C3                                  ret
+    29 0000000E                                 
+    30 0000000E                                 _io_hlt:	; void io_hlt(void);
+    31 0000000E F4                              		HLT
+    32 0000000F C3                              		RET
+    33 00000010                                 
+    34 00000010                                 _io_cli:	; void io_cli(void);
+    35 00000010 FA                              		CLI
+    36 00000011 C3                              		RET
+    37 00000012                                 
+    38 00000012                                 _io_sti:	; void io_sti(void);
+    39 00000012 FB                              		STI
+    40 00000013 C3                              		RET
+    41 00000014                                 
+    42 00000014                                 _io_stihlt:	; void io_stihlt(void);
+    43 00000014 FB                              		STI
+    44 00000015 F4                              		HLT
+    45 00000016 C3                              		RET
+    46 00000017                                 
+    47 00000017                                 _io_in8:	; int io_in8(int port);
+    48 00000017 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    49 0000001B B8 00000000                     		MOV		EAX,0
+    50 00000020 EC                              		IN		AL,DX
+    51 00000021 C3                              		RET
+    52 00000022                                 
+    53 00000022                                 _io_in16:	; int io_in16(int port);
+    54 00000022 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    55 00000026 B8 00000000                     		MOV		EAX,0
+    56 0000002B 66 ED                           		IN		AX,DX
+    57 0000002D C3                              		RET
+    58 0000002E                                 
+    59 0000002E                                 _io_in32:	; int io_in32(int port);
+    60 0000002E 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    61 00000032 ED                              		IN		EAX,DX
+    62 00000033 C3                              		RET
+    63 00000034                                 
+    64 00000034                                 _io_out8:	; void io_out8(int port, int data);
+    65 00000034 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    66 00000038 8A 44 24 08                     		MOV		AL,[ESP+8]		; data
+    67 0000003C EE                              		OUT		DX,AL
+    68 0000003D C3                              		RET
+    69 0000003E                                 
+    70 0000003E                                 _io_out16:	; void io_out16(int port, int data);
+    71 0000003E 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    72 00000042 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
+    73 00000046 66 EF                           		OUT		DX,AX
+    74 00000048 C3                              		RET
+    75 00000049                                 
+    76 00000049                                 _io_out32:	; void io_out32(int port, int data);
+    77 00000049 8B 54 24 04                     		MOV		EDX,[ESP+4]		; port
+    78 0000004D 8B 44 24 08                     		MOV		EAX,[ESP+8]		; data
+    79 00000051 EF                              		OUT		DX,EAX
+    80 00000052 C3                              		RET
+    81 00000053                                 
+    82 00000053                                 _io_load_eflags:	; int io_load_eflags(void);
+    83 00000053 9C                              		PUSHFD		; PUSH EFLAGS
+    84 00000054 58                              		POP		EAX
+    85 00000055 C3                              		RET
+    86 00000056                                 
+    87 00000056                                 _io_store_eflags:	; void io_store_eflags(int eflags);
+    88 00000056 8B 44 24 04                     		MOV		EAX,[ESP+4]
+    89 0000005A 50                              		PUSH	EAX
+    90 0000005B 9D                              		POPFD		; POP
+    91 0000005C C3                              		RET
+    92 0000005D                                 
+    93 0000005D                                 _load_gdtr:		; void load_gdtr(int limit, int addr);
+    94 0000005D 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
+    95 00000062 66 89 44 24 06                  		MOV		[ESP+6],AX
+    96 00000067 0F 01 54 24 06                  		LGDT	[ESP+6]
+    97 0000006C C3                              		RET
+    98 0000006D                                 
+    99 0000006D                                 _load_idtr:		; void load_idtr(int limit, int addr);
+   100 0000006D 66 8B 44 24 04                  		MOV		AX,[ESP+4]		; limit
+   101 00000072 66 89 44 24 06                  		MOV		[ESP+6],AX
+   102 00000077 0F 01 5C 24 06                  		LIDT	[ESP+6]
+   103 0000007C C3                              		RET
+   104 0000007D                                 
+   105 0000007D                                 _asm_inthandler21:
+   106 0000007D 06                              		PUSH	ES
+   107 0000007E 1E                              		PUSH	DS
+   108 0000007F 60                              		PUSHAD
+   109 00000080 89 E0                           		MOV		EAX,ESP
+   110 00000082 50                              		PUSH	EAX
+   111 00000083 66 8C D0                        		MOV		AX,SS
+   112 00000086 8E D8                           		MOV		DS,AX
+   113 00000088 8E C0                           		MOV		ES,AX
+   114 0000008A E8 [00000000]                   		CALL	_inthandler21
+   115 0000008F 58                              		POP		EAX
+   116 00000090 61                              		POPAD
+   117 00000091 1F                              		POP		DS
+   118 00000092 07                              		POP		ES
+   119 00000093 CF                              		IRETD
+   120 00000094                                 
+   121 00000094                                 _asm_inthandler27:
+   122 00000094 06                              		PUSH	ES
+   123 00000095 1E                              		PUSH	DS
+   124 00000096 60                              		PUSHAD
+   125 00000097 89 E0                           		MOV		EAX,ESP
+   126 00000099 50                              		PUSH	EAX
+   127 0000009A 66 8C D0                        		MOV		AX,SS
+   128 0000009D 8E D8                           		MOV		DS,AX
+   129 0000009F 8E C0                           		MOV		ES,AX
+   130 000000A1 E8 [00000000]                   		CALL	_inthandler27
+   131 000000A6 58                              		POP		EAX
+   132 000000A7 61                              		POPAD
+   133 000000A8 1F                              		POP		DS
+   134 000000A9 07                              		POP		ES
+   135 000000AA CF                              		IRETD
+   136 000000AB                                 
+   137 000000AB                                 _asm_inthandler2c:
+   138 000000AB 06                              		PUSH	ES
+   139 000000AC 1E                              		PUSH	DS
+   140 000000AD 60                              		PUSHAD
+   141 000000AE 89 E0                           		MOV		EAX,ESP
+   142 000000B0 50                              		PUSH	EAX
+   143 000000B1 66 8C D0                        		MOV		AX,SS
+   144 000000B4 8E D8                           		MOV		DS,AX
+   145 000000B6 8E C0                           		MOV		ES,AX
+   146 000000B8 E8 [00000000]                   		CALL	_inthandler2c
+   147 000000BD 58                              		POP		EAX
+   148 000000BE 61                              		POPAD
+   149 000000BF 1F                              		POP		DS
+   150 000000C0 07                              		POP		ES
+   151 000000C1 CF                              		IRETD
+   152 000000C2                                 
+   153 000000C2                                 
+   154 000000C2                                 
+   155 000000C2                                 
+   156 000000C2                                 _memtest_sub: ; unsigned int memtest_sub(unsigned int start,unsigned int end);
+   157 000000C2 57                                      push edi
+   158 000000C3 56                                      push esi
+   159 000000C4 53                                      push ebx
+   160 000000C5 BE AA55AA55                             mov esi, 0xaa55aa55
+   161 000000CA BF 55AA55AA                             mov edi, 0x55aa55aa
+   162 000000CF 8B 44 24 10                             mov eax, [esp + 12 + 4]
+   163 000000D3                                 
+   164 000000D3                                 
+   165 000000D3                                 mts_loop:
+   166 000000D3 89 C3                                   mov ebx,eax
+   167 000000D5 81 C3 00000FFC                          add ebx,0xffc
+   168 000000DB 8B 13                                   mov edx,[ebx]
+   169 000000DD 89 33                                   mov [ebx],esi
+   170 000000DF 83 33 FF                                xor dword [ebx],0xffffffff
+   171 000000E2 3B 3B                                   cmp edi,[ebx]
+   172 000000E4 75 18                                   jne mts_fin
+   173 000000E6 83 33 FF                                xor dword [ebx],0xffffffff
+   174 000000E9 3B 33                                   cmp esi,[ebx]
+   175 000000EB 75 11                                   jne mts_fin
+   176 000000ED 89 13                                   mov [ebx],edx
+   177 000000EF 05 00001000                             add eax,0x1000
+   178 000000F4 3B 44 24 14                             cmp eax,[esp+12+8]
+   179 000000F8 76 D9                                   jbe mts_loop
+   180 000000FA 5B                                      pop ebx
+   181 000000FB 5E                                      pop esi
+   182 000000FC 5F                                      pop edi
+   183 000000FD C3                                      ret
+   184 000000FE                                 
+   185 000000FE                                 mts_fin:
+   186 000000FE 89 13                                   mov [ebx],edx
+   187 00000100 5B                                      pop ebx
+   188 00000101 5E                                      pop esi
+   189 00000102 5F                                      pop edi
+   190 00000103 C3                                      ret
+   191 00000104                                 
+   192 00000104                                 
+   193 00000104                                 _load_cr0:
+   194 00000104 0F 20 C0                                mov eax,CR0
+   195 00000107 C3                                      ret
+   196 00000108                                 
+   197 00000108                                 _store_cr0:
+   198 00000108 8B 44 24 04                             mov eax,[esp+4]
+   199 0000010C 0F 22 C0                                mov cr0,eax
+   200 0000010F C3                                      ret
+   201 00000110                                 
+   202 00000110                                 
+   203 00000110                                 _load_tr: ; // void load_tr(int tr);
+   204 00000110 0F 00 5C 24 04                      LTR [esp+4]
+   205 00000115 C3                                  ret
+   206 00000116                                 
+   207 00000116                                 _farjmp: ; void farjmp(int eip,int cs)
+   208 00000116 FF 6C 24 04                             jmp far [esp+4] ; eip,cs
+   209 0000011A C3                                      ret
+   210 0000011B                                 
+   211 0000011B                                 
+   212 0000011B                                 
+   213 0000011B                                 _taskswitch3:	; void taskswitch3(void);
+   214 0000011B EA 00000000 0018                		JMP		3*8:0
+   215 00000122 C3                              		RET
+   216 00000123                                 
+   217 00000123                                 _taskswitch4:	; void taskswitch4(void);
+   218 00000123 EA 00000000 0020                		JMP		4*8:0
+   219 0000012A C3                              		RET

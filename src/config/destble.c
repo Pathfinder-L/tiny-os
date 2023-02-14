@@ -1,35 +1,35 @@
-/* GDT傗IDT側偳偺丄 descriptor table 娭學 */
+/*  */
 
 #include "../main.h"
 
-void init_GdtIdt(void) {
+void init_gdtidt(void) {
     struct SEGMENT_DESCRIPTOR *gdt = (struct SEGMENT_DESCRIPTOR *) ADR_GDT;
     struct GATE_DESCRIPTOR *idt = (struct GATE_DESCRIPTOR *) ADR_IDT;
     int i;
 
     for (i = 0; i <= LIMIT_GDT / 8; i++) {
-        set_SegmentDesc(gdt + i, 0, 0, 0);
+        set_segmentdesc(gdt + i, 0, 0, 0);
     }
-    set_SegmentDesc(gdt + 1, 0xffffffff, 0x00000000, AR_DATA32_RW);
-    set_SegmentDesc(gdt + 2, LIMIT_BOTPAK, ADR_BOTPAK, AR_CODE32_ER);
+    set_segmentdesc(gdt + 1, 0xffffffff, 0x00000000, AR_DATA32_RW);
+    set_segmentdesc(gdt + 2, LIMIT_BOTPAK, ADR_BOTPAK, AR_CODE32_ER);
     load_gdtr(LIMIT_GDT, ADR_GDT);
 
 
     for (i = 0; i <= LIMIT_IDT / 8; i++) {
-        set_GateDesc(idt + i, 0, 0, 0);
+        set_gatedesc(idt + i, 0, 0, 0);
     }
     load_idtr(LIMIT_IDT, ADR_IDT);
 
     /*注册中断程序*/
-    set_GateDesc(idt + 0x21, (int) asm_inthandler21, 2 * 8, AR_INTGATE32);
-    set_GateDesc(idt + 0x27, (int) asm_inthandler27, 2 * 8, AR_INTGATE32);
-    set_GateDesc(idt + 0x2c, (int) asm_inthandler2c, 2 * 8, AR_INTGATE32);
+    set_gatedesc(idt + 0x21, (int) asm_inthandler21, 2 * 8, AR_INTGATE32);
+    set_gatedesc(idt + 0x27, (int) asm_inthandler27, 2 * 8, AR_INTGATE32);
+    set_gatedesc(idt + 0x2c, (int) asm_inthandler2c, 2 * 8, AR_INTGATE32);
    // set_GateDesc(idt + 0x20, (int) asm_inthandler20, 2 * 8, AR_INTGATE32); 定时器中断
 
     return;
 }
 
-void set_SegmentDesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar) {
+void set_segmentdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar) {
     if (limit > 0xfffff) {
         ar |= 0x8000; /* G_bit = 1 */
         limit /= 0x1000;
@@ -43,7 +43,7 @@ void set_SegmentDesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base
     return;
 }
 
-void set_GateDesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar) {
+void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar) {
     gd->offset_low = offset & 0xffff;
     gd->selector = selector;
     gd->dw_count = (ar >> 8) & 0xff;

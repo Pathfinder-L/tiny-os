@@ -1,0 +1,31 @@
+     1 00000000                                 [FORMAT "WCOFF"]
+     2 00000000                                 [INSTRSET "i486p"]
+     3 00000000                                 [OPTIMIZE 1]
+     4 00000000                                 [OPTION 1]
+     5 00000000                                 [BITS 32]
+     6 00000000                                 	EXTERN	_io_out8
+     7 00000000                                 	EXTERN	_io_in8
+     8 00000000                                 [FILE "keyboard.c"]
+     9                                          [SECTION .text]
+    10 00000000                                 	GLOBAL	_inthandler21
+    11 00000000                                 _inthandler21:
+    12 00000000 55                              	PUSH	EBP
+    13 00000001 89 E5                           	MOV	EBP,ESP
+    14 00000003 6A 61                           	PUSH	97
+    15 00000005 6A 20                           	PUSH	32
+    16 00000007 E8 [00000000]                   	CALL	_io_out8
+    17 0000000C 58                              	POP	EAX
+    18 0000000D 5A                              	POP	EDX
+    19 0000000E C7 45 08 00000060               	MOV	DWORD [8+EBP],96
+    20 00000015 C9                              	LEAVE
+    21 00000016 E9 [00000000]                   	JMP	_io_in8
+    22 0000001B                                 	GLOBAL	_offset_keyboard
+    23                                          [SECTION .data]
+    24 00000000                                 	ALIGNB	4
+    25 00000000                                 _offset_keyboard:
+    26 00000000 00 00 00 00                     	RESB	4
+    27 00000004                                 	GLOBAL	_kq
+    28                                          [SECTION .data]
+    29 00000004                                 	ALIGNB	4
+    30 00000004                                 _kq:
+    31 00000004 00 00 00 00                     	RESB	4
