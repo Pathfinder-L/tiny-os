@@ -14,53 +14,13 @@ VRAM  EQU  0x0ff8  ;; 图像缓冲区 的开始地址
 
 org 0xc200  ;; 转入内存 0xc200
 
-
-
-;; 判断vbe是否存在
-mov ax,0x9000
-mov es,ax
-mov di,0
-mov ax,0x4f00
-int 0x10
-cmp ax,0x004f
-jne scrn320
-
-mov ax,[es:di+4]
-cmp ax,0x0200
-jb scrn320
-
-mov cx,VBEMODE
-mov ax,0x4f01
-int 0x10
-cmp ax,0x004f
-jne scrn320
-
-cmp byte [es:di+0x19],8
-jne scrn320
-cmp byte [es:di+0x1b],4
-jne scrn320
-mov ax,[es:di+0x00]
-and ax,0x0080
-jz scrn320
-
-
-mov bx,0x4101
-mov ax,0x4f02
-int 0x10
-mov byte [VMODE],8
-mov word [SCRNX],640
-mov word [SCRNY],480
-mov dword [VRAM],0xe0000000
-jmp keystatus
-
-scrn320:
-    mov al,0x13 ;; 切换显示模式
-    mov ah,0x00 ;;
-    int 0x10
-    mov byte [VMODE] , 8;
-    mov word [SCRNX] ,320;
-    mov word [SCRNY] ,200;
-    mov dword [VRAM] , 0x000a0000
+MOV		AL,0x13			; VGA僌儔僼傿僢僋僗丄320x200x8bit僇儔乕
+MOV		AH,0x00
+INT		0x10
+MOV		BYTE [VMODE],8	; 夋柺儌乕僪傪儊儌偡傞乮C尵岅偑嶲徠偡傞乯
+MOV		WORD [SCRNX],320
+MOV		WORD [SCRNY],200
+MOV		DWORD [VRAM],0x000a0000
 
 
 keystatus:

@@ -8,11 +8,14 @@
 
 #include "main.h"
 
-void HariMain()
-{
-	for(;;)
-	{
-		io_hlt();
-	}
+void HariMain(void) {
+    char *p;
+    int i;
+    for (i = 0xa0000; i <= 0xaffff; i++) {
+        p = i;
+        *p = i & 0x0f;
+    }
+    for (;;)
+        io_hlt();
 }
 
