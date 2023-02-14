@@ -7,6 +7,7 @@ EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
 BOOTPATH = $(TOP)/boot/
 GRAPHICPATH =$(TOP)/graphic/
+CONFIGPATH = $(TOP)/config/
 COPY     = copy
 DEL      = del
 
@@ -17,7 +18,7 @@ OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 RULEFILE = $(TOP)\config\haribote.rul
 BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
-OBJS = main.obj $(BOOTPATH)nasfunc.obj $(GRAPHICPATH)draw.obj
+OBJS = main.obj $(BOOTPATH)nasfunc.obj $(GRAPHICPATH)draw.obj $(CONFIGPATH)config.obj
 
 
 

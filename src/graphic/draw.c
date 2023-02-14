@@ -43,3 +43,30 @@ void init_palette(void) {
 
     /* static char 定义*/
 }
+
+/*初始化主屏幕*/
+void init_screen(unsigned char *vram, int x, int y) {
+    // 大上部分
+    boxfill(vram, x, COL8_008484, 0, 0, x, y - 20);
+    boxfill(vram, x, COL8_00FFFF, x / 2 - 6, y - 16, x / 2 + 6, y - 4);
+    //COL8_000000
+    boxfill(vram, x, COL8_000000, x / 2 - 6, y - 10,
+            x / 2 + 6, y - 10);
+    boxfill(vram, x, COL8_000000, x / 2, y - 16,
+            x / 2, y - 4);
+}
+
+/*启动信息*/
+void init_bootInfo() {
+
+}
+
+void boxfill(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1) {
+    int x, y;
+    for (y = y0; y <= y1; y++) {
+        for (x = x0; x <= x1; x++)
+            vram[y * xsize + x] = c;
+    }
+    return;
+}
+

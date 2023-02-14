@@ -1,0 +1,11 @@
+     1 00000000                                 [FORMAT "WCOFF"]
+     2 00000000                                 [INSTRSET "i486p"]
+     3 00000000                                 [OPTIMIZE 1]
+     4 00000000                                 [OPTION 1]
+     5 00000000                                 [BITS 32]
+     6 00000000                                 [FILE "config.c"]
+     7 00000000                                 	GLOBAL	_bootInfo
+     8                                          [SECTION .data]
+     9 00000000                                 	ALIGNB	4
+    10 00000000                                 _bootInfo:
+    11 00000000 00000FF0                        	DD	4080

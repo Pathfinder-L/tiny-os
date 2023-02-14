@@ -1,6 +1,7 @@
 #define MAX_SHEET  256
 #define true 1
 #define false 0
+#define ADDRESS_BOOTINFO 0X00000ff0
 
 /*定义颜色*/
 #define COL8_000000        0
@@ -70,8 +71,29 @@ int io_load_eflags(void);
 
 void io_store_eflags(int eflags); // 保存 eflags
 
+void load_gdtr(int limit, int address);
+
+void load_idtr(int limit, int address);
+
 
 /*graphic.c*/
 void init_palette(void);
 
 void set_palette(int start, int end, unsigned char *rgb);
+
+void init_screen(unsigned char *vram, int x, int y);
+
+void boxfill(unsigned char *vram, int xSize, unsigned char c, int x0, int y0, int x1, int y1);
+
+
+/*int.c*/
+void init_pic(void);
+
+void inthandler27(int *esp);
+
+/*destble.c*/
+void init_GdtIdt(void);
+
+void set_SegmentDesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
+
+void set_GateDesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
