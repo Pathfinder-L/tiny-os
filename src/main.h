@@ -84,6 +84,12 @@ struct GATE_DESCRIPTOR {
     short offset_high;
 };
 
+
+struct FIFO {
+    unsigned char *buf;
+    int p, q, size, free, flags;
+};
+
 /*nasfunc.nas*/
 void io_hlt(void);
 
@@ -152,3 +158,6 @@ void init_keyboard(void);
 
 /*mouse.c*/
 void enable_mouse();
+
+/*fifo.c*/
+
