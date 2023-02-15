@@ -10,8 +10,9 @@
 		GLOBAL	_io_in8,  _io_in16,  _io_in32
 		GLOBAL	_io_out8, _io_out16, _io_out32
 		GLOBAL	_io_load_eflags, _io_store_eflags
-		GLOBAL	_load_gdtr, _load_idtr
+		GLOBAL	_load_gdtr, _load_idtr , _store_cr0 ,_load_cr0
 		GLOBAL	_asm_inthandler21, _asm_inthandler27, _asm_inthandler2c
+		GLOBAL  _memtest_sub
 		EXTERN	_inthandler21, _inthandler27, _inthandler2c
 
 [SECTION .text]
@@ -91,6 +92,46 @@ _load_idtr:		; void load_idtr(int limit, int addr);
 		LIDT	[ESP+6]
 		RET
 
+
+_memtest_sub: ; unsigned int memtest_sub(unsigned int start,unsigned int end);
+        push edi
+        push esi
+        push ebx
+        mov esi, 0xaa55aa55
+        mov edi, 0x55aa55aa
+        mov eax, [esp + 12 + 4]
+
+
+
+
+mts_loop:
+        mov ebx,eax
+        add ebx,0xffc
+        mov edx,[ebx]
+        mov [ebx],esi
+        xor dword [ebx],0xffffffff
+        cmp edi,[ebx]
+        jne mts_fin
+        xor dword [ebx],0xffffffff
+        cmp esi,[ebx]
+        jne mts_fin
+        mov [ebx],edx
+        add eax,0x1000
+        cmp eax,[esp+12+8]
+        jbe mts_loop
+        pop ebx
+        pop esi
+        pop edi
+        ret
+
+mts_fin:
+        mov [ebx],edx
+        pop ebx
+        pop esi
+        pop edi
+        ret
+
+
 _asm_inthandler21:
 		PUSH	ES
 		PUSH	DS
@@ -138,3 +179,13 @@ _asm_inthandler2c:
 		POP		DS
 		POP		ES
 		IRETD
+
+
+_load_cr0:		; int load_cr0(void);
+		MOV		EAX,CR0
+		RET
+
+_store_cr0:		; void store_cr0(int cr0);
+		MOV		EAX,[ESP+4]
+		MOV		CR0,EAX
+		RET

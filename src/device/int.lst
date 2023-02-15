@@ -3,76 +3,61 @@
      3 00000000                                 [OPTIMIZE 1]
      4 00000000                                 [OPTION 1]
      5 00000000                                 [BITS 32]
-     6 00000000                                 	EXTERN	_bootInfo
-     7 00000000                                 	EXTERN	_putStr
-     8 00000000                                 	EXTERN	_io_out8
-     9 00000000                                 	EXTERN	_io_sti
-    10 00000000                                 [FILE "int.c"]
-    11                                          [SECTION .data]
-    12 00000000                                 LC0:
-    13 00000000 70 69 63 00                     	DB	"pic",0x00
-    14                                          [SECTION .text]
-    15 00000000                                 	GLOBAL	_init_pic
-    16 00000000                                 _init_pic:
-    17 00000000 55                              	PUSH	EBP
-    18 00000001 89 E5                           	MOV	EBP,ESP
-    19 00000003 68 [00000000]                   	PUSH	LC0
-    20 00000008 6A 07                           	PUSH	7
-    21 0000000A 6A 00                           	PUSH	0
-    22 0000000C 6A 00                           	PUSH	0
-    23 0000000E 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
-    24 00000014 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
-    25 00000018 50                              	PUSH	EAX
-    26 00000019 FF 72 08                        	PUSH	DWORD [8+EDX]
-    27 0000001C E8 [00000000]                   	CALL	_putStr
-    28 00000021 68 000000FF                     	PUSH	255
-    29 00000026 6A 21                           	PUSH	33
-    30 00000028 E8 [00000000]                   	CALL	_io_out8
-    31 0000002D 83 C4 20                        	ADD	ESP,32
-    32 00000030 68 000000FF                     	PUSH	255
-    33 00000035 68 000000A1                     	PUSH	161
-    34 0000003A E8 [00000000]                   	CALL	_io_out8
-    35 0000003F 6A 11                           	PUSH	17
-    36 00000041 6A 20                           	PUSH	32
-    37 00000043 E8 [00000000]                   	CALL	_io_out8
-    38 00000048 6A 20                           	PUSH	32
-    39 0000004A 6A 21                           	PUSH	33
-    40 0000004C E8 [00000000]                   	CALL	_io_out8
-    41 00000051 6A 04                           	PUSH	4
-    42 00000053 6A 21                           	PUSH	33
-    43 00000055 E8 [00000000]                   	CALL	_io_out8
-    44 0000005A 83 C4 20                        	ADD	ESP,32
-    45 0000005D 6A 01                           	PUSH	1
-    46 0000005F 6A 21                           	PUSH	33
-    47 00000061 E8 [00000000]                   	CALL	_io_out8
-    48 00000066 6A 11                           	PUSH	17
-    49 00000068 68 000000A0                     	PUSH	160
-    50 0000006D E8 [00000000]                   	CALL	_io_out8
-    51 00000072 6A 28                           	PUSH	40
-    52 00000074 68 000000A1                     	PUSH	161
-    53 00000079 E8 [00000000]                   	CALL	_io_out8
-    54 0000007E 6A 02                           	PUSH	2
-    55 00000080 68 000000A1                     	PUSH	161
-    56 00000085 E8 [00000000]                   	CALL	_io_out8
-    57 0000008A 83 C4 20                        	ADD	ESP,32
-    58 0000008D 6A 01                           	PUSH	1
-    59 0000008F 68 000000A1                     	PUSH	161
-    60 00000094 E8 [00000000]                   	CALL	_io_out8
-    61 00000099 68 000000FB                     	PUSH	251
-    62 0000009E 6A 21                           	PUSH	33
-    63 000000A0 E8 [00000000]                   	CALL	_io_out8
-    64 000000A5 68 000000FF                     	PUSH	255
-    65 000000AA 68 000000A1                     	PUSH	161
-    66 000000AF E8 [00000000]                   	CALL	_io_out8
-    67 000000B4 83 C4 18                        	ADD	ESP,24
-    68 000000B7 C9                              	LEAVE
-    69 000000B8 E9 [00000000]                   	JMP	_io_sti
-    70 000000BD                                 	GLOBAL	_inthandler27
-    71 000000BD                                 _inthandler27:
-    72 000000BD 55                              	PUSH	EBP
-    73 000000BE 89 E5                           	MOV	EBP,ESP
-    74 000000C0 6A 67                           	PUSH	103
-    75 000000C2 6A 20                           	PUSH	32
-    76 000000C4 E8 [00000000]                   	CALL	_io_out8
-    77 000000C9 C9                              	LEAVE
-    78 000000CA C3                              	RET
+     6 00000000                                 	EXTERN	_io_out8
+     7 00000000                                 	EXTERN	_io_sti
+     8 00000000                                 [FILE "int.c"]
+     9                                          [SECTION .text]
+    10 00000000                                 	GLOBAL	_init_pic
+    11 00000000                                 _init_pic:
+    12 00000000 55                              	PUSH	EBP
+    13 00000001 89 E5                           	MOV	EBP,ESP
+    14 00000003 68 000000FF                     	PUSH	255
+    15 00000008 6A 21                           	PUSH	33
+    16 0000000A E8 [00000000]                   	CALL	_io_out8
+    17 0000000F 68 000000FF                     	PUSH	255
+    18 00000014 68 000000A1                     	PUSH	161
+    19 00000019 E8 [00000000]                   	CALL	_io_out8
+    20 0000001E 6A 11                           	PUSH	17
+    21 00000020 6A 20                           	PUSH	32
+    22 00000022 E8 [00000000]                   	CALL	_io_out8
+    23 00000027 6A 20                           	PUSH	32
+    24 00000029 6A 21                           	PUSH	33
+    25 0000002B E8 [00000000]                   	CALL	_io_out8
+    26 00000030 83 C4 20                        	ADD	ESP,32
+    27 00000033 6A 04                           	PUSH	4
+    28 00000035 6A 21                           	PUSH	33
+    29 00000037 E8 [00000000]                   	CALL	_io_out8
+    30 0000003C 6A 01                           	PUSH	1
+    31 0000003E 6A 21                           	PUSH	33
+    32 00000040 E8 [00000000]                   	CALL	_io_out8
+    33 00000045 6A 11                           	PUSH	17
+    34 00000047 68 000000A0                     	PUSH	160
+    35 0000004C E8 [00000000]                   	CALL	_io_out8
+    36 00000051 6A 28                           	PUSH	40
+    37 00000053 68 000000A1                     	PUSH	161
+    38 00000058 E8 [00000000]                   	CALL	_io_out8
+    39 0000005D 83 C4 20                        	ADD	ESP,32
+    40 00000060 6A 02                           	PUSH	2
+    41 00000062 68 000000A1                     	PUSH	161
+    42 00000067 E8 [00000000]                   	CALL	_io_out8
+    43 0000006C 6A 01                           	PUSH	1
+    44 0000006E 68 000000A1                     	PUSH	161
+    45 00000073 E8 [00000000]                   	CALL	_io_out8
+    46 00000078 68 000000FB                     	PUSH	251
+    47 0000007D 6A 21                           	PUSH	33
+    48 0000007F E8 [00000000]                   	CALL	_io_out8
+    49 00000084 68 000000FF                     	PUSH	255
+    50 00000089 68 000000A1                     	PUSH	161
+    51 0000008E E8 [00000000]                   	CALL	_io_out8
+    52 00000093 83 C4 20                        	ADD	ESP,32
+    53 00000096 C9                              	LEAVE
+    54 00000097 E9 [00000000]                   	JMP	_io_sti
+    55 0000009C                                 	GLOBAL	_inthandler27
+    56 0000009C                                 _inthandler27:
+    57 0000009C 55                              	PUSH	EBP
+    58 0000009D 89 E5                           	MOV	EBP,ESP
+    59 0000009F 6A 67                           	PUSH	103
+    60 000000A1 6A 20                           	PUSH	32
+    61 000000A3 E8 [00000000]                   	CALL	_io_out8
+    62 000000A8 C9                              	LEAVE
+    63 000000A9 C3                              	RET

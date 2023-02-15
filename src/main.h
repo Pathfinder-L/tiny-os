@@ -85,9 +85,14 @@ struct GATE_DESCRIPTOR {
 };
 
 
-struct FIFO {
-    unsigned char *buf;
+struct FIFO32 {
+    unsigned int *buf;
     int p, q, size, free, flags;
+};
+
+struct MOUSE_DEC {
+    unsigned char buf[3], phase;
+    int x, y, btn;
 };
 
 /*nasfunc.nas*/
@@ -110,6 +115,10 @@ void io_store_eflags(int eflags); // 保存 eflags
 void load_gdtr(int limit, int address);
 
 void load_idtr(int limit, int address);
+
+int load_cr0(void);
+
+void store_cr0(int cr0);
 
 
 /*graphic.c*/
@@ -154,10 +163,48 @@ void inthandler2c(int *esp);
 /*keyboard.c*/
 void wait_KBC_sendready(void);
 
-void init_keyboard(void);
+void init_keyboard(struct FIFO32 *kq, int offset);
 
 /*mouse.c*/
 void enable_mouse();
 
-/*fifo.c*/
+void enable_mouse(struct FIFO32 *mf, int data);
 
+/*fifo.c*/
+void fifo32_init(struct FIFO32 *fifo, int size, int *buf);
+
+int fifo32_put(struct FIFO32 *fifo, int data);
+
+int fifo32_get(struct FIFO32 *fifo);
+
+int fifo32_status(struct FIFO32 *fifo);
+
+/*memory.c*/
+#define MEM_FREES 4090
+#define MEM_MANAGER_ADDRESS 0x003C0000 // 内存管理人员所在的内存地址
+
+struct FREEINFO {
+    unsigned int address, size;
+};
+
+struct MEMMANAGER {
+    int frees, maxFrees, lostSize, losts;
+    struct FREEINFO freeInfo[MEM_FREES];
+};
+
+
+void memmanager_init(struct MEMMANAGER *manager);
+
+unsigned int memory_total(struct MEMMANAGER *man);
+
+unsigned int memory_alloc(struct MEMMANAGER *man, unsigned int size);
+
+int memory_free(struct MEMMANAGER *man, unsigned int address, unsigned int size);
+
+unsigned int alloc4k(struct MEMMANAGER *man, unsigned int size);
+
+int free4k(struct MEMMANAGER *man, unsigned int address, unsigned int size);
+
+unsigned int memtest_sub(unsigned int start, unsigned int end);
+
+unsigned int memtest(unsigned int start, unsigned int end);

@@ -2,7 +2,6 @@
 extern struct BOOTINFO *bootInfo;
 void init_gdtidt(void)
 {
-    putStr(bootInfo->vram, bootInfo->scrnx, 0, 20, COL8_FFFFFF, "git");
     struct SEGMENT_DESCRIPTOR *gdt = (struct SEGMENT_DESCRIPTOR *) ADR_GDT;
     struct GATE_DESCRIPTOR    *idt = (struct GATE_DESCRIPTOR    *) ADR_IDT;
     int i;

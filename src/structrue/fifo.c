@@ -1,9 +1,8 @@
-/*先进先出队列*/
 #include "../main.h"
 
 #define FLAGS_OVERRUN        0x0001
 
-void fifo_init(struct FIFO *fifo, int size, unsigned char *buf) {
+void fifo32_init(struct FIFO32 *fifo, int size, int *buf) {
     fifo->size = size;
     fifo->buf = buf;
     fifo->free = size;
@@ -13,10 +12,9 @@ void fifo_init(struct FIFO *fifo, int size, unsigned char *buf) {
     return;
 }
 
-int fifo8_put(struct FIFO *fifo, unsigned char data)
-/* FIFO傊僨乕僞傪憲傝崬傫偱拁偊傞 */
-{
+int fifo32_put(struct FIFO32 *fifo, int data) {
     if (fifo->free == 0) {
+        /* 嬻偒偑側偔偰偁傆傟偨 */
         fifo->flags |= FLAGS_OVERRUN;
         return -1;
     }
@@ -29,7 +27,7 @@ int fifo8_put(struct FIFO *fifo, unsigned char data)
     return 0;
 }
 
-int fifo8_get(struct FIFO *fifo) {
+int fifo32_get(struct FIFO32 *fifo) {
     int data;
     if (fifo->free == fifo->size) {
         return -1;
@@ -43,6 +41,6 @@ int fifo8_get(struct FIFO *fifo) {
     return data;
 }
 
-int fifo8_status(struct FIFO  *fifo) {
+int fifo32_status(struct FIFO32 *fifo) {
     return fifo->size - fifo->free;
 }

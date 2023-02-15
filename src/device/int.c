@@ -5,7 +5,7 @@ extern struct BOOTINFO *bootInfo;
 void init_pic(void)
 /* PIC初始化 */
 {
-    putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_FFFFFF, "pic");
+  //  putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_FFFFFF, "pic");
     io_out8(PIC0_IMR,  0xff  ); /* 禁止所有中断 */
     io_out8(PIC1_IMR,  0xff  ); /* 禁止所有中断 */
 
