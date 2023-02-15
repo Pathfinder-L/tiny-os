@@ -12,16 +12,25 @@ extern struct BOOTINFO *bootInfo;
 
 
 void init() {
+    init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
     init_palette();
     init_gdtidt();
+    init_pic();
+    io_sti();
+    io_out8(PIC0_IMR, 0xf9);
+    io_out8(PIC1_IMR, 0xef);
+
+    init_keyboard(); // 开启鼠标之前必须激活键盘电路
+    enable_mouse();
+
+
 }
 
 
 void HariMain(void) {
     init();
 
-    init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
-    putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_FFFFFF, "hello");
+
     for (;;)
         io_hlt();
 }

@@ -19,9 +19,9 @@ RULEFILE = $(TOP)\config\haribote.rul
 BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
 OBJS = main.obj $(BOOTPATH)nasfunc.obj  \
-		 $(CONFIGPATH)config.obj   $(CONFIGPATH)destble.obj  $(CONFIGPATH)fonts.obj \
+		 $(CONFIGPATH)config.obj   $(CONFIGPATH)fonts.obj \
 		 $(GRAPHICPATH)draw.obj \
-		 $(DEVICEPATH)keyboard.obj $(DEVICEPATH)mouse.obj $(DEVICEPATH)int.obj
+		 $(DEVICEPATH)keyboard.obj $(DEVICEPATH)mouse.obj $(DEVICEPATH)int.obj $(DEVICEPATH)dsctbl.obj
 
 
 %.gas : %.c main.h Makefile
@@ -85,10 +85,15 @@ clean :
 	-$(DEL) *.obj
 	-$(DEL) os.sys
 	-$(DEL) os.img
-	-$(DEL) $(DELTOP)\boot\nasfunc.obj
-	-$(DEL) $(DELTOP)\boot\nasfunc.lst
-	-$(DEL) $(DELTOP)\boot\ipl.bin
-	-$(DEL) $(DELTOP)\boot\basic.bin
+	-$(DEL) .\config\config.obj
+	-$(DEL) .\config\config.lst
+	-$(DEL) .\device\dsctbl.lst
+	-$(DEL) .\device\dsctbl.obj
+	-$(DEL) .\device\keyboard.obj
+	-$(DEL) .\device\keyboard.lst
+	-$(DEL) .\device\mouse.lst
+	-$(DEL) .\device\mouse.obj
+
 
 
 src_only :

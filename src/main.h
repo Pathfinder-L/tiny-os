@@ -127,7 +127,7 @@ void inthandler27(int *esp);
 /*destble.c*/
 void init_gdtidt(void);
 
-void set_segmentdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
+void set_segmdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
 
 void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
 
@@ -143,3 +143,12 @@ void inthandler21(int *esp);
 void inthandler27(int *esp);
 
 void inthandler2c(int *esp);
+
+
+/*keyboard.c*/
+void wait_KBC_sendready(void);
+
+void init_keyboard(void);
+
+/*mouse.c*/
+void enable_mouse();

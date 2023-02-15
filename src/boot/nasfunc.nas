@@ -1,31 +1,20 @@
-[FORMAT "WCOFF"]				;
-[INSTRSET "i486p"]				;
-[BITS 32]						;
-[FILE "nasfunc.nas"]			;
+; naskfunc
+; TAB=4
+
+[FORMAT "WCOFF"]				; 僆僽僕僃僋僩僼傽僀儖傪嶌傞儌乕僪
+[INSTRSET "i486p"]				; 486偺柦椷傑偱巊偄偨偄偲偄偆婰弎
+[BITS 32]						; 32價僢僩儌乕僪梡偺婡夿岅傪嶌傜偣傞
+[FILE "naskfunc.nas"]			; 僜乕僗僼傽僀儖柤忣曬
 
 		GLOBAL	_io_hlt, _io_cli, _io_sti, _io_stihlt
 		GLOBAL	_io_in8,  _io_in16,  _io_in32
 		GLOBAL	_io_out8, _io_out16, _io_out32
 		GLOBAL	_io_load_eflags, _io_store_eflags
-		GLOBAL	_load_gdtr, _load_idtr,_load_tr
-		GLOBAL  _load_cr0,_store_cr0
-		GLOBAL	_asm_inthandler20, _asm_inthandler21
-    	GLOBAL	_asm_inthandler27, _asm_inthandler2c
-		GLOBAL _puts,_memtest_sub
-		GLOBAL	_taskswitch3, _taskswitch4 ,_farjmp
-        EXTERN	_inthandler21
-    	EXTERN	_inthandler27, _inthandler2c
+		GLOBAL	_load_gdtr, _load_idtr
+		GLOBAL	_asm_inthandler21, _asm_inthandler27, _asm_inthandler2c
+		EXTERN	_inthandler21, _inthandler27, _inthandler2c
 
 [SECTION .text]
-
-
-_puts: ;;void puts(char *s)
-    push ebx
-    mov edx,2
-    mov ebx,[esp+8]
-    int 0x40
-    pop ebx
-    ret
 
 _io_hlt:	; void io_hlt(void);
 		HLT
@@ -80,14 +69,14 @@ _io_out32:	; void io_out32(int port, int data);
 		RET
 
 _io_load_eflags:	; int io_load_eflags(void);
-		PUSHFD		; PUSH EFLAGS
+		PUSHFD		; PUSH EFLAGS 偲偄偆堄枴
 		POP		EAX
 		RET
 
 _io_store_eflags:	; void io_store_eflags(int eflags);
 		MOV		EAX,[ESP+4]
 		PUSH	EAX
-		POPFD		; POP
+		POPFD		; POP EFLAGS 偲偄偆堄枴
 		RET
 
 _load_gdtr:		; void load_gdtr(int limit, int addr);
@@ -149,71 +138,3 @@ _asm_inthandler2c:
 		POP		DS
 		POP		ES
 		IRETD
-
-
-
-
-_memtest_sub: ; unsigned int memtest_sub(unsigned int start,unsigned int end);
-        push edi
-        push esi
-        push ebx
-        mov esi, 0xaa55aa55
-        mov edi, 0x55aa55aa
-        mov eax, [esp + 12 + 4]
-
-
-mts_loop:
-        mov ebx,eax
-        add ebx,0xffc
-        mov edx,[ebx]
-        mov [ebx],esi
-        xor dword [ebx],0xffffffff
-        cmp edi,[ebx]
-        jne mts_fin
-        xor dword [ebx],0xffffffff
-        cmp esi,[ebx]
-        jne mts_fin
-        mov [ebx],edx
-        add eax,0x1000
-        cmp eax,[esp+12+8]
-        jbe mts_loop
-        pop ebx
-        pop esi
-        pop edi
-        ret
-
-mts_fin:
-        mov [ebx],edx
-        pop ebx
-        pop esi
-        pop edi
-        ret
-
-
-_load_cr0:
-        mov eax,CR0
-        ret
-
-_store_cr0:
-        mov eax,[esp+4]
-        mov cr0,eax
-        ret
-
-
-_load_tr: ; // void load_tr(int tr);
-    LTR [esp+4]
-    ret
-
-_farjmp: ; void farjmp(int eip,int cs)
-        jmp far [esp+4] ; eip,cs
-        ret
-
-
-
-_taskswitch3:	; void taskswitch3(void);
-		JMP		3*8:0
-		RET
-
-_taskswitch4:	; void taskswitch4(void);
-		JMP		4*8:0
-		RET
