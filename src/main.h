@@ -153,11 +153,15 @@ void asm_inthandler27(void);
 
 void asm_inthandler2c(void);
 
+void asm_inthandler20(void);
+
 void inthandler21(int *esp);
 
 void inthandler27(int *esp);
 
 void inthandler2c(int *esp);
+
+void inthandler20(int *esp);
 
 
 /*keyboard.c*/
@@ -210,3 +214,31 @@ unsigned int memtest_sub(unsigned int start, unsigned int end);
 unsigned int memtest(unsigned int start, unsigned int end);
 
 void init_mem();
+
+
+/*Timer.c*/
+
+#define MAX_TIMER        500
+struct TIMER {
+    struct TIMER *next;
+    unsigned int timeout, flags;
+    struct FIFO32 *fifo;
+    int data;
+};
+struct TIMERCTL {
+    unsigned int count, next;
+    struct TIMER *t0;
+    struct TIMER timers0[MAX_TIMER];
+};
+extern struct TIMERCTL timerctl;
+
+void init_pit(void);
+
+struct TIMER *timer_alloc(void);
+
+void timer_free(struct TIMER *timer);
+
+void timer_init(struct TIMER *timer, struct FIFO32 *fifo, int data);
+
+void timer_settime(struct TIMER *timer, unsigned int timeout);
+

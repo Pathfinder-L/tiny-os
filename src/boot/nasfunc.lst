@@ -11,9 +11,9 @@
     11 00000000                                 		GLOBAL	_io_out8, _io_out16, _io_out32
     12 00000000                                 		GLOBAL	_io_load_eflags, _io_store_eflags
     13 00000000                                 		GLOBAL	_load_gdtr, _load_idtr , _store_cr0 ,_load_cr0
-    14 00000000                                 		GLOBAL	_asm_inthandler21, _asm_inthandler27, _asm_inthandler2c
+    14 00000000                                 		GLOBAL	_asm_inthandler21, _asm_inthandler27, _asm_inthandler2c,_asm_inthandler20
     15 00000000                                 		GLOBAL  _memtest_sub
-    16 00000000                                 		EXTERN	_inthandler21, _inthandler27, _inthandler2c
+    16 00000000                                 		EXTERN	_inthandler21, _inthandler27, _inthandler2c,_inthandler20
     17 00000000                                 
     18                                          [SECTION .text]
     19 00000000                                 
@@ -180,12 +180,27 @@
    180 000000F4 07                              		POP		ES
    181 000000F5 CF                              		IRETD
    182 000000F6                                 
-   183 000000F6                                 
-   184 000000F6                                 _load_cr0:		; int load_cr0(void);
-   185 000000F6 0F 20 C0                        		MOV		EAX,CR0
-   186 000000F9 C3                              		RET
-   187 000000FA                                 
-   188 000000FA                                 _store_cr0:		; void store_cr0(int cr0);
-   189 000000FA 8B 44 24 04                     		MOV		EAX,[ESP+4]
-   190 000000FE 0F 22 C0                        		MOV		CR0,EAX
-   191 00000101 C3                              		RET
+   183 000000F6                                 _asm_inthandler20:
+   184 000000F6 06                              		PUSH	ES
+   185 000000F7 1E                              		PUSH	DS
+   186 000000F8 60                              		PUSHAD
+   187 000000F9 89 E0                           		MOV		EAX,ESP
+   188 000000FB 50                              		PUSH	EAX
+   189 000000FC 66 8C D0                        		MOV		AX,SS
+   190 000000FF 8E D8                           		MOV		DS,AX
+   191 00000101 8E C0                           		MOV		ES,AX
+   192 00000103 E8 [00000000]                   		CALL	_inthandler20
+   193 00000108 58                              		POP		EAX
+   194 00000109 61                              		POPAD
+   195 0000010A 1F                              		POP		DS
+   196 0000010B 07                              		POP		ES
+   197 0000010C CF                              		IRETD
+   198 0000010D                                 
+   199 0000010D                                 _load_cr0:		; int load_cr0(void);
+   200 0000010D 0F 20 C0                        		MOV		EAX,CR0
+   201 00000110 C3                              		RET
+   202 00000111                                 
+   203 00000111                                 _store_cr0:		; void store_cr0(int cr0);
+   204 00000111 8B 44 24 04                     		MOV		EAX,[ESP+4]
+   205 00000115 0F 22 C0                        		MOV		CR0,EAX
+   206 00000118 C3                              		RET
