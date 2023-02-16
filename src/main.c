@@ -51,7 +51,7 @@ void HariMain(void) {
     timer3 = timer_alloc();
     timer_init(timer3, &fifo, 1);
     timer_settime(timer3, 500);
-    
+
     putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_000000, s);
     for (;;) {
         if (fifo32_status(dataStream) != 0) {

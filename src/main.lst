@@ -18,206 +18,169 @@
     18 00000000                                 	EXTERN	_timer_alloc
     19 00000000                                 	EXTERN	_timer_init
     20 00000000                                 	EXTERN	_timer_settime
-    21 00000000                                 	EXTERN	_sprintf
-    22 00000000                                 	EXTERN	_putStr
-    23 00000000                                 	EXTERN	_memmanager
-    24 00000000                                 	EXTERN	_fifo32_status
-    25 00000000                                 	EXTERN	_fifo32_get
-    26 00000000                                 	EXTERN	_boxfill
-    27 00000000                                 [FILE "main.c"]
-    28                                          [SECTION .data]
-    29 00000000                                 LC0:
-    30 00000000 28 25 64 2C 25 64 29 00         	DB	"(%d,%d)",0x00
-    31 00000008                                 LC1:
-    32 00000008 61 64 64 72 65 73 73 3A 25 70   	DB	"address:%p",0x00
-       00000012 00 
-    33 00000013                                 LC3:
-    34 00000013 35 73 65 63 00                  	DB	"5sec",0x00
-    35 00000018                                 LC2:
-    36 00000018 65 3A 25 64 00                  	DB	"e:%d",0x00
-    37                                          [SECTION .text]
-    38 00000000                                 	GLOBAL	_HariMain
-    39 00000000                                 _HariMain:
-    40 00000000 55                              	PUSH	EBP
-    41 00000001 89 E5                           	MOV	EBP,ESP
-    42 00000003 56                              	PUSH	ESI
-    43 00000004 53                              	PUSH	EBX
-    44 00000005 81 EC 00000238                  	SUB	ESP,568
-    45 0000000B 8D 5D D8                        	LEA	EBX,DWORD [-40+EBP]
-    46 0000000E E8 [00000000]                   	CALL	_init_gdtidt
-    47 00000013 E8 [00000000]                   	CALL	_init_pic
-    48 00000018 E8 [00000000]                   	CALL	_io_sti
-    49 0000001D E8 [00000000]                   	CALL	_init_pit
-    50 00000022 8D 85 FFFFFDD8                  	LEA	EAX,DWORD [-552+EBP]
-    51 00000028 50                              	PUSH	EAX
-    52 00000029 68 00000080                     	PUSH	128
-    53 0000002E 53                              	PUSH	EBX
-    54 0000002F E8 [00000000]                   	CALL	_fifo32_init
-    55 00000034 68 00000100                     	PUSH	256
-    56 00000039 53                              	PUSH	EBX
-    57 0000003A E8 [00000000]                   	CALL	_init_keyboard
-    58 0000003F 68 00000200                     	PUSH	512
-    59 00000044 53                              	PUSH	EBX
-    60 00000045 E8 [00000000]                   	CALL	_enable_mouse
-    61 0000004A 68 000000F8                     	PUSH	248
-    62 0000004F 6A 21                           	PUSH	33
-    63 00000051 89 1D [00000030]                	MOV	DWORD [_dataStream],EBX
-    64 00000057 E8 [00000000]                   	CALL	_io_out8
-    65 0000005C 83 C4 24                        	ADD	ESP,36
-    66 0000005F 68 000000EF                     	PUSH	239
-    67 00000064 68 000000A1                     	PUSH	161
-    68 00000069 E8 [00000000]                   	CALL	_io_out8
-    69 0000006E E8 [00000000]                   	CALL	_init_mem
-    70 00000073 E8 [00000000]                   	CALL	_init_palette
-    71 00000078 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
-    72 0000007E 0F BF 42 06                     	MOVSX	EAX,WORD [6+EDX]
-    73 00000082 50                              	PUSH	EAX
-    74 00000083 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
-    75 00000087 50                              	PUSH	EAX
-    76 00000088 FF 72 08                        	PUSH	DWORD [8+EDX]
-    77 0000008B E8 [00000000]                   	CALL	_init_screen
-    78 00000090 E8 [00000000]                   	CALL	_timer_alloc
-    79 00000095 6A 0A                           	PUSH	10
-    80 00000097 53                              	PUSH	EBX
-    81 00000098 89 C6                           	MOV	ESI,EAX
-    82 0000009A 50                              	PUSH	EAX
-    83 0000009B E8 [00000000]                   	CALL	_timer_init
-    84 000000A0 83 C4 20                        	ADD	ESP,32
-    85 000000A3 68 000003E8                     	PUSH	1000
-    86 000000A8 56                              	PUSH	ESI
-    87 000000A9 E8 [00000000]                   	CALL	_timer_settime
-    88 000000AE E8 [00000000]                   	CALL	_timer_alloc
-    89 000000B3 6A 03                           	PUSH	3
-    90 000000B5 53                              	PUSH	EBX
-    91 000000B6 89 C6                           	MOV	ESI,EAX
-    92 000000B8 50                              	PUSH	EAX
-    93 000000B9 E8 [00000000]                   	CALL	_timer_init
-    94 000000BE 68 0000012C                     	PUSH	300
-    95 000000C3 56                              	PUSH	ESI
-    96 000000C4 E8 [00000000]                   	CALL	_timer_settime
-    97 000000C9 E8 [00000000]                   	CALL	_timer_alloc
-    98 000000CE 6A 01                           	PUSH	1
-    99 000000D0 53                              	PUSH	EBX
-   100 000000D1 89 C6                           	MOV	ESI,EAX
-   101 000000D3 50                              	PUSH	EAX
-   102 000000D4 8D 9D FFFFFDC8                  	LEA	EBX,DWORD [-568+EBP]
-   103 000000DA E8 [00000000]                   	CALL	_timer_init
-   104 000000DF 83 C4 28                        	ADD	ESP,40
-   105 000000E2 68 000001F4                     	PUSH	500
-   106 000000E7 56                              	PUSH	ESI
-   107 000000E8 E8 [00000000]                   	CALL	_timer_settime
-   108 000000ED A1 [00000000]                   	MOV	EAX,DWORD [_bootInfo]
-   109 000000F2 0F BF 70 04                     	MOVSX	ESI,WORD [4+EAX]
-   110 000000F6 0F BF 40 06                     	MOVSX	EAX,WORD [6+EAX]
-   111 000000FA 50                              	PUSH	EAX
-   112 000000FB 56                              	PUSH	ESI
-   113 000000FC BE 00000002                     	MOV	ESI,2
-   114 00000101 68 [00000000]                   	PUSH	LC0
-   115 00000106 53                              	PUSH	EBX
-   116 00000107 E8 [00000000]                   	CALL	_sprintf
-   117 0000010C 8B 0D [00000000]                	MOV	ECX,DWORD [_bootInfo]
-   118 00000112 53                              	PUSH	EBX
-   119 00000113 6A 00                           	PUSH	0
-   120 00000115 66 8B 41 06                     	MOV	AX,WORD [6+ECX]
-   121 00000119 66 99                           	CWD
-   122 0000011B 66 F7 FE                        	IDIV	SI
-   123 0000011E 98                              	CWDE
-   124 0000011F 50                              	PUSH	EAX
-   125 00000120 66 8B 41 04                     	MOV	AX,WORD [4+ECX]
-   126 00000124 66 99                           	CWD
-   127 00000126 66 F7 FE                        	IDIV	SI
-   128 00000129 98                              	CWDE
-   129 0000012A 50                              	PUSH	EAX
-   130 0000012B 0F BF 41 04                     	MOVSX	EAX,WORD [4+ECX]
-   131 0000012F 50                              	PUSH	EAX
-   132 00000130 FF 71 08                        	PUSH	DWORD [8+ECX]
-   133 00000133 E8 [00000000]                   	CALL	_putStr
-   134 00000138 83 C4 30                        	ADD	ESP,48
-   135 0000013B FF 35 [00000000]                	PUSH	DWORD [_memmanager]
-   136 00000141 68 [00000008]                   	PUSH	LC1
-   137 00000146 53                              	PUSH	EBX
-   138 00000147 E8 [00000000]                   	CALL	_sprintf
-   139 0000014C 8B 35 [00000000]                	MOV	ESI,DWORD [_bootInfo]
-   140 00000152 53                              	PUSH	EBX
-   141 00000153 6A 00                           	PUSH	0
-   142 00000155 6A 00                           	PUSH	0
-   143 00000157 6A 00                           	PUSH	0
-   144 00000159 0F BF 46 04                     	MOVSX	EAX,WORD [4+ESI]
-   145 0000015D 50                              	PUSH	EAX
-   146 0000015E FF 76 08                        	PUSH	DWORD [8+ESI]
-   147 00000161 E8 [00000000]                   	CALL	_putStr
-   148 00000166 83 C4 24                        	ADD	ESP,36
-   149 00000169                                 L2:
-   150 00000169 FF 35 [00000030]                	PUSH	DWORD [_dataStream]
-   151 0000016F E8 [00000000]                   	CALL	_fifo32_status
-   152 00000174 5A                              	POP	EDX
-   153 00000175 85 C0                           	TEST	EAX,EAX
-   154 00000177 74 F0                           	JE	L2
-   155 00000179 FF 35 [00000030]                	PUSH	DWORD [_dataStream]
-   156 0000017F E8 [00000000]                   	CALL	_fifo32_get
-   157 00000184 89 C3                           	MOV	EBX,EAX
-   158 00000186 58                              	POP	EAX
-   159 00000187 83 FB 64                        	CMP	EBX,100
-   160 0000018A 7F 43                           	JG	L9
-   161 0000018C 4B                              	DEC	EBX
-   162 0000018D 75 DA                           	JNE	L2
-   163 0000018F 6A 32                           	PUSH	50
-   164 00000191 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
-   165 00000197 6A 64                           	PUSH	100
-   166 00000199 6A 28                           	PUSH	40
-   167 0000019B 6A 32                           	PUSH	50
-   168 0000019D 6A 0E                           	PUSH	14
-   169 0000019F 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
-   170 000001A3 50                              	PUSH	EAX
-   171 000001A4 FF 72 08                        	PUSH	DWORD [8+EDX]
-   172 000001A7 E8 [00000000]                   	CALL	_boxfill
-   173 000001AC 8B 35 [00000000]                	MOV	ESI,DWORD [_bootInfo]
-   174 000001B2 68 [00000013]                   	PUSH	LC3
-   175 000001B7 6A 00                           	PUSH	0
-   176 000001B9 6A 28                           	PUSH	40
-   177 000001BB 6A 32                           	PUSH	50
-   178 000001BD 0F BF 46 04                     	MOVSX	EAX,WORD [4+ESI]
-   179 000001C1 50                              	PUSH	EAX
-   180 000001C2 FF 76 08                        	PUSH	DWORD [8+ESI]
-   181 000001C5 E8 [00000000]                   	CALL	_putStr
-   182 000001CA 83 C4 34                        	ADD	ESP,52
-   183 000001CD EB 9A                           	JMP	L2
-   184 000001CF                                 L9:
-   185 000001CF 6A 32                           	PUSH	50
-   186 000001D1 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
-   187 000001D7 6A 64                           	PUSH	100
-   188 000001D9 6A 1E                           	PUSH	30
-   189 000001DB 6A 14                           	PUSH	20
-   190 000001DD 6A 0E                           	PUSH	14
-   191 000001DF 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
-   192 000001E3 50                              	PUSH	EAX
-   193 000001E4 FF 72 08                        	PUSH	DWORD [8+EDX]
-   194 000001E7 E8 [00000000]                   	CALL	_boxfill
-   195 000001EC 53                              	PUSH	EBX
-   196 000001ED 68 [00000018]                   	PUSH	LC2
-   197 000001F2 8D 9D FFFFFDC8                  	LEA	EBX,DWORD [-568+EBP]
-   198 000001F8 53                              	PUSH	EBX
-   199 000001F9 E8 [00000000]                   	CALL	_sprintf
-   200 000001FE 8B 35 [00000000]                	MOV	ESI,DWORD [_bootInfo]
-   201 00000204 83 C4 28                        	ADD	ESP,40
-   202 00000207 53                              	PUSH	EBX
-   203 00000208 6A 00                           	PUSH	0
-   204 0000020A 6A 1E                           	PUSH	30
-   205 0000020C 6A 14                           	PUSH	20
-   206 0000020E 0F BF 46 04                     	MOVSX	EAX,WORD [4+ESI]
-   207 00000212 50                              	PUSH	EAX
-   208 00000213 FF 76 08                        	PUSH	DWORD [8+ESI]
-   209 00000216 E8 [00000000]                   	CALL	_putStr
-   210 0000021B 83 C4 18                        	ADD	ESP,24
-   211 0000021E E9 FFFFFF46                     	JMP	L2
-   212 00000223                                 	GLOBAL	_mdec
-   213                                          [SECTION .data]
-   214 0000001D 00 00 00                        	ALIGNB	16
-   215 00000020                                 _mdec:
-   216 00000020 00 00 00 00 00 00 00 00 00 00   	RESB	16
-       0000002A 00 00 00 00 00 00 
-   217 00000030                                 	GLOBAL	_dataStream
-   218                                          [SECTION .data]
-   219 00000030                                 	ALIGNB	4
-   220 00000030                                 _dataStream:
-   221 00000030 00 00 00 00                     	RESB	4
+    21 00000000                                 	EXTERN	_putStr
+    22 00000000                                 	EXTERN	_fifo32_status
+    23 00000000                                 	EXTERN	_fifo32_get
+    24 00000000                                 	EXTERN	_boxfill
+    25 00000000                                 	EXTERN	_sprintf
+    26 00000000                                 [FILE "main.c"]
+    27                                          [SECTION .data]
+    28 00000000                                 LC1:
+    29 00000000 35 73 65 63 00                  	DB	"5sec",0x00
+    30 00000005                                 LC0:
+    31 00000005 65 3A 25 64 00                  	DB	"e:%d",0x00
+    32                                          [SECTION .text]
+    33 00000000                                 	GLOBAL	_HariMain
+    34 00000000                                 _HariMain:
+    35 00000000 55                              	PUSH	EBP
+    36 00000001 89 E5                           	MOV	EBP,ESP
+    37 00000003 56                              	PUSH	ESI
+    38 00000004 53                              	PUSH	EBX
+    39 00000005 81 EC 00000230                  	SUB	ESP,560
+    40 0000000B 8D 5D D8                        	LEA	EBX,DWORD [-40+EBP]
+    41 0000000E E8 [00000000]                   	CALL	_init_gdtidt
+    42 00000013 E8 [00000000]                   	CALL	_init_pic
+    43 00000018 E8 [00000000]                   	CALL	_io_sti
+    44 0000001D E8 [00000000]                   	CALL	_init_pit
+    45 00000022 8D 85 FFFFFDD8                  	LEA	EAX,DWORD [-552+EBP]
+    46 00000028 50                              	PUSH	EAX
+    47 00000029 68 00000080                     	PUSH	128
+    48 0000002E 53                              	PUSH	EBX
+    49 0000002F E8 [00000000]                   	CALL	_fifo32_init
+    50 00000034 68 00000100                     	PUSH	256
+    51 00000039 53                              	PUSH	EBX
+    52 0000003A E8 [00000000]                   	CALL	_init_keyboard
+    53 0000003F 68 00000200                     	PUSH	512
+    54 00000044 53                              	PUSH	EBX
+    55 00000045 E8 [00000000]                   	CALL	_enable_mouse
+    56 0000004A 68 000000F8                     	PUSH	248
+    57 0000004F 6A 21                           	PUSH	33
+    58 00000051 89 1D [00000020]                	MOV	DWORD [_dataStream],EBX
+    59 00000057 E8 [00000000]                   	CALL	_io_out8
+    60 0000005C 83 C4 24                        	ADD	ESP,36
+    61 0000005F 68 000000EF                     	PUSH	239
+    62 00000064 68 000000A1                     	PUSH	161
+    63 00000069 E8 [00000000]                   	CALL	_io_out8
+    64 0000006E E8 [00000000]                   	CALL	_init_mem
+    65 00000073 E8 [00000000]                   	CALL	_init_palette
+    66 00000078 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+    67 0000007E 0F BF 42 06                     	MOVSX	EAX,WORD [6+EDX]
+    68 00000082 50                              	PUSH	EAX
+    69 00000083 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+    70 00000087 50                              	PUSH	EAX
+    71 00000088 FF 72 08                        	PUSH	DWORD [8+EDX]
+    72 0000008B E8 [00000000]                   	CALL	_init_screen
+    73 00000090 E8 [00000000]                   	CALL	_timer_alloc
+    74 00000095 6A 0A                           	PUSH	10
+    75 00000097 53                              	PUSH	EBX
+    76 00000098 89 C6                           	MOV	ESI,EAX
+    77 0000009A 50                              	PUSH	EAX
+    78 0000009B E8 [00000000]                   	CALL	_timer_init
+    79 000000A0 83 C4 20                        	ADD	ESP,32
+    80 000000A3 68 000003E8                     	PUSH	1000
+    81 000000A8 56                              	PUSH	ESI
+    82 000000A9 E8 [00000000]                   	CALL	_timer_settime
+    83 000000AE E8 [00000000]                   	CALL	_timer_alloc
+    84 000000B3 6A 03                           	PUSH	3
+    85 000000B5 53                              	PUSH	EBX
+    86 000000B6 89 C6                           	MOV	ESI,EAX
+    87 000000B8 50                              	PUSH	EAX
+    88 000000B9 E8 [00000000]                   	CALL	_timer_init
+    89 000000BE 68 0000012C                     	PUSH	300
+    90 000000C3 56                              	PUSH	ESI
+    91 000000C4 E8 [00000000]                   	CALL	_timer_settime
+    92 000000C9 E8 [00000000]                   	CALL	_timer_alloc
+    93 000000CE 6A 01                           	PUSH	1
+    94 000000D0 53                              	PUSH	EBX
+    95 000000D1 89 C6                           	MOV	ESI,EAX
+    96 000000D3 50                              	PUSH	EAX
+    97 000000D4 E8 [00000000]                   	CALL	_timer_init
+    98 000000D9 83 C4 28                        	ADD	ESP,40
+    99 000000DC 68 000001F4                     	PUSH	500
+   100 000000E1 56                              	PUSH	ESI
+   101 000000E2 E8 [00000000]                   	CALL	_timer_settime
+   102 000000E7 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+   103 000000ED 8D 85 FFFFFDC8                  	LEA	EAX,DWORD [-568+EBP]
+   104 000000F3 50                              	PUSH	EAX
+   105 000000F4 6A 00                           	PUSH	0
+   106 000000F6 6A 00                           	PUSH	0
+   107 000000F8 6A 00                           	PUSH	0
+   108 000000FA 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+   109 000000FE 50                              	PUSH	EAX
+   110 000000FF FF 72 08                        	PUSH	DWORD [8+EDX]
+   111 00000102 E8 [00000000]                   	CALL	_putStr
+   112 00000107 83 C4 20                        	ADD	ESP,32
+   113 0000010A                                 L2:
+   114 0000010A FF 35 [00000020]                	PUSH	DWORD [_dataStream]
+   115 00000110 E8 [00000000]                   	CALL	_fifo32_status
+   116 00000115 5A                              	POP	EDX
+   117 00000116 85 C0                           	TEST	EAX,EAX
+   118 00000118 74 F0                           	JE	L2
+   119 0000011A FF 35 [00000020]                	PUSH	DWORD [_dataStream]
+   120 00000120 E8 [00000000]                   	CALL	_fifo32_get
+   121 00000125 89 C3                           	MOV	EBX,EAX
+   122 00000127 58                              	POP	EAX
+   123 00000128 83 FB 64                        	CMP	EBX,100
+   124 0000012B 7F 43                           	JG	L9
+   125 0000012D 4B                              	DEC	EBX
+   126 0000012E 75 DA                           	JNE	L2
+   127 00000130 6A 32                           	PUSH	50
+   128 00000132 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+   129 00000138 6A 64                           	PUSH	100
+   130 0000013A 6A 28                           	PUSH	40
+   131 0000013C 6A 32                           	PUSH	50
+   132 0000013E 6A 0E                           	PUSH	14
+   133 00000140 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+   134 00000144 50                              	PUSH	EAX
+   135 00000145 FF 72 08                        	PUSH	DWORD [8+EDX]
+   136 00000148 E8 [00000000]                   	CALL	_boxfill
+   137 0000014D 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+   138 00000153 68 [00000000]                   	PUSH	LC1
+   139 00000158 6A 00                           	PUSH	0
+   140 0000015A 6A 28                           	PUSH	40
+   141 0000015C 6A 32                           	PUSH	50
+   142 0000015E 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+   143 00000162 50                              	PUSH	EAX
+   144 00000163 FF 72 08                        	PUSH	DWORD [8+EDX]
+   145 00000166 E8 [00000000]                   	CALL	_putStr
+   146 0000016B 83 C4 34                        	ADD	ESP,52
+   147 0000016E EB 9A                           	JMP	L2
+   148 00000170                                 L9:
+   149 00000170 6A 32                           	PUSH	50
+   150 00000172 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+   151 00000178 6A 64                           	PUSH	100
+   152 0000017A 6A 1E                           	PUSH	30
+   153 0000017C 6A 14                           	PUSH	20
+   154 0000017E 6A 0E                           	PUSH	14
+   155 00000180 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+   156 00000184 50                              	PUSH	EAX
+   157 00000185 FF 72 08                        	PUSH	DWORD [8+EDX]
+   158 00000188 E8 [00000000]                   	CALL	_boxfill
+   159 0000018D 53                              	PUSH	EBX
+   160 0000018E 68 [00000005]                   	PUSH	LC0
+   161 00000193 8D 9D FFFFFDC8                  	LEA	EBX,DWORD [-568+EBP]
+   162 00000199 53                              	PUSH	EBX
+   163 0000019A E8 [00000000]                   	CALL	_sprintf
+   164 0000019F 8B 15 [00000000]                	MOV	EDX,DWORD [_bootInfo]
+   165 000001A5 83 C4 28                        	ADD	ESP,40
+   166 000001A8 53                              	PUSH	EBX
+   167 000001A9 6A 00                           	PUSH	0
+   168 000001AB 6A 1E                           	PUSH	30
+   169 000001AD 6A 14                           	PUSH	20
+   170 000001AF 0F BF 42 04                     	MOVSX	EAX,WORD [4+EDX]
+   171 000001B3 50                              	PUSH	EAX
+   172 000001B4 FF 72 08                        	PUSH	DWORD [8+EDX]
+   173 000001B7 E8 [00000000]                   	CALL	_putStr
+   174 000001BC 83 C4 18                        	ADD	ESP,24
+   175 000001BF E9 FFFFFF46                     	JMP	L2
+   176 000001C4                                 	GLOBAL	_mdec
+   177                                          [SECTION .data]
+   178 0000000A 00 00 00 00 00 00               	ALIGNB	16
+   179 00000010                                 _mdec:
+   180 00000010 00 00 00 00 00 00 00 00 00 00   	RESB	16
+       0000001A 00 00 00 00 00 00 
+   181 00000020                                 	GLOBAL	_dataStream
+   182                                          [SECTION .data]
+   183 00000020                                 	ALIGNB	4
+   184 00000020                                 _dataStream:
+   185 00000020 00 00 00 00                     	RESB	4
