@@ -166,7 +166,7 @@ void wait_KBC_sendready(void);
 void init_keyboard(struct FIFO32 *kq, int offset);
 
 /*mouse.c*/
-void enable_mouse();
+
 
 void enable_mouse(struct FIFO32 *mf, int data);
 
@@ -208,3 +208,5 @@ int free4k(struct MEMMANAGER *man, unsigned int address, unsigned int size);
 unsigned int memtest_sub(unsigned int start, unsigned int end);
 
 unsigned int memtest(unsigned int start, unsigned int end);
+
+void init_mem();

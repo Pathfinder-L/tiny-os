@@ -3,7 +3,7 @@
 
 extern struct BOOTINFO *bootInfo;
 
-struct FIFO *mousefifo;
+struct FIFO32 *mousefifo;
 int mouse_offset;
 
 // 将数据加入偏置 放入一个队列里面
@@ -12,32 +12,20 @@ void inthandler2c(int *esp) {
     io_out8(PIC1_OCW2, 0x64);
     io_out8(PIC0_OCW2, 0x62);
     data = io_in8(PORT_KEYDAT);
-   // fifo32_put(mousefifo, data + mouse_offset);
-   // putStr(bootInfo->vram, bootInfo->scrnx, 0, 80, COL8_000000, "mouse");
+
+    fifo32_put(mousefifo, data + mouse_offset);
     return;
 }
 
 #define KEYCMD_SENDTO_MOUSE        0xd4
 #define MOUSECMD_ENABLE            0xf4
 
-//void enable_mouse() {
-//    wait_KBC_sendready();
-//    putStr(bootInfo->vram, bootInfo->scrnx, 40, 0, COL8_000000, "st1");
-//    io_out8(PORT_KEYCMD, KEYCMD_SENDTO_MOUSE);
-//    wait_KBC_sendready();
-//    putStr(bootInfo->vram, bootInfo->scrnx, 40, 20, COL8_000000, "st2");
-//    io_out8(PORT_KEYDAT, MOUSECMD_ENABLE);
-//    return;
-//}
-
 void enable_mouse(struct FIFO32 *mf, int data) {
     mousefifo = mf;
     mouse_offset = data;
     wait_KBC_sendready();
-  //  putStr(bootInfo->vram, bootInfo->scrnx, 40, 0, COL8_000000, "st1");
     io_out8(PORT_KEYCMD, KEYCMD_SENDTO_MOUSE);
     wait_KBC_sendready();
-  //  putStr(bootInfo->vram, bootInfo->scrnx, 40, 20, COL8_000000, "st2");
     io_out8(PORT_KEYDAT, MOUSECMD_ENABLE);
     return;
 }

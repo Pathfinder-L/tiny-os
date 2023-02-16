@@ -3,6 +3,17 @@
 
 #include "../main.h"
 
+extern struct MEMMANAGER *memmanager;
+
+void init_mem() {
+    unsigned int memTotal = memtest(0x00400000, 0xbfffffff);
+    memmanager_init(memmanager);
+
+    memory_free(memmanager, 0x00001000, 0x0009e000);
+    memory_free(memmanager, 0x00400000, memTotal - 0x00400000);
+}
+
+
 // 内存管理者初始化
 void memmanager_init(struct MEMMANAGER *manager) {
     manager->frees = 0;  // 可用信息数目

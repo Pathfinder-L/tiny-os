@@ -1,26 +1,26 @@
-/*keyboard.c*/
+/* �L�[�{�[�h�֌W */
 
 #include "../main.h"
 
-extern struct BOOTINFO *bootInfo;
-struct FIFO *keyfifo;
-int key_offset;
+struct FIFO32 *keyfifo;
+int keydata0;
 
-char tmp[12];
-
-void inthandler21(int *esp) {
+void inthandler21(int *esp)
+{
     int data;
-    io_out8(PIC0_OCW2, 0x61);
+    io_out8(PIC0_OCW2, 0x61);	/* IRQ-01��t������PIC�ɒʒm */
     data = io_in8(PORT_KEYDAT);
-
-//    sprintf(tmp, "e:%p%d", keyfifo, key_offset);
-//    putStr(bootInfo->vram, bootInfo->scrnx, 0, 40, COL8_000000, tmp);
-//    fifo8_put(keyfifo, data + key_offset);
+    fifo32_put(keyfifo, data + keydata0);
     return;
 }
 
+#define PORT_KEYSTA				0x0064
+#define KEYSTA_SEND_NOTREADY	0x02
+#define KEYCMD_WRITE_MODE		0x60
+#define KBC_MODE				0x47
 
-void wait_KBC_sendready(void) {
+void wait_KBC_sendready(void)
+{
     for (;;) {
         if ((io_in8(PORT_KEYSTA) & KEYSTA_SEND_NOTREADY) == 0) {
             break;
@@ -29,19 +29,10 @@ void wait_KBC_sendready(void) {
     return;
 }
 
-//void init_keyboard(void)
-//{
-//    wait_KBC_sendready();
-//    io_out8(PORT_KEYCMD, KEYCMD_WRITE_MODE);
-//    wait_KBC_sendready();
-//    io_out8(PORT_KEYDAT, KBC_MODE);
-//    return;
-//}
-
-void init_keyboard(struct FIFO32 *kq, int offset) {
-    keyfifo = kq;
-    key_offset = offset;
-
+void init_keyboard(struct FIFO32 *fifo, int data0)
+{
+    keyfifo = fifo;
+    keydata0 = data0;
     wait_KBC_sendready();
     io_out8(PORT_KEYCMD, KEYCMD_WRITE_MODE);
     wait_KBC_sendready();

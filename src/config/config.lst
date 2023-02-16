@@ -9,3 +9,7 @@
      9 00000000                                 	ALIGNB	4
     10 00000000                                 _bootInfo:
     11 00000000 00000FF0                        	DD	4080
+    12 00000004                                 	GLOBAL	_memmanager
+    13 00000004                                 	ALIGNB	4
+    14 00000004                                 _memmanager:
+    15 00000004 003C0000                        	DD	3932160
