@@ -300,7 +300,7 @@ struct SHEET {
     // bxSize,bySize 分别表示图层的横长度和宽长度
     // vx0, vy0 表示 相对于图层的偏移
 
-    int bxsize, bysize, vx0, vy0, col_inv, height, flags;
+    int bxsize, bysize, vx0, vy0, col_inv, height, flags, col_bk;
     struct SHTCTL *ctl;
 };
 

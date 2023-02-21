@@ -9,6 +9,16 @@
 #include "main.h"
 
 extern struct BOOTINFO *bootInfo;
+
+char keyTable[0x54] = {
+        0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', 0, 0,
+        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 0, 0, 'A', 'S',
+        'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', ':', 0, 0, ']', 'Z', 'X', 'C', 'V',
+        'B', 'N', 'M', ',', '.', '/', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, '7', '8', '9', '-', '4', '5', '6', '+', '1',
+        '2', '3', '0', '.'
+};
+
 extern struct MEMMANAGER *memmanager;
 struct MOUSE_DEC mdec;
 struct FIFO32 *dataStream;
@@ -37,6 +47,8 @@ void HariMain(void) {
 
     buf_back = (unsigned char *) alloc4k(memmanager, bootInfo->scrnx * bootInfo->scrny);
     buf_mouse = (unsigned char *) alloc4k(memmanager, 16 * 16);
+    sht_back->col_inv = COLOR_INV;
+    sht_back->col_bk = COL8_008484;
 
     sheet_setbuf(sht_back, buf_back, bootInfo->scrnx, bootInfo->scrny, COLOR_INV);
     sheet_setbuf(sht_mouse, buf_mouse, 16, 16, COLOR_INV);
@@ -83,7 +95,8 @@ void HariMain(void) {
     timer_init(timer3, &fifo, 1);
     timer_settime(timer3, 500);
 
-    putStr(bootInfo->vram, bootInfo->scrnx, 0, 0, COL8_000000, s);
+    s[0] = keyTable[3];
+
     for (;;) {
         if (fifo32_status(dataStream) != 0) {
             int data = fifo32_get(dataStream);
@@ -95,7 +108,13 @@ void HariMain(void) {
                 mouseDec.sy += mouseDec.y;
                 sheet_slide(sht_mouse, mouseDec.sx, mouseDec.sy);
             } else if (data >= 256 && data <= 511) {
-
+                // 解析键盘数据
+                if (data < 256 + 0x54) {
+                    s[0] = keyTable[data - 256];
+                    boxfill(buf_back, bootInfo->scrnx, sht_back->col_bk, 0, 0, 8, 16);
+                    putStr(buf_back, bootInfo->scrnx, 0, 0, COL8_000000, s);
+                    sheet_refresh(sht_back, 0, 0, 8, 16);
+                }
             } else {
 
             }
