@@ -27,6 +27,8 @@ void HariMain(void) {
     struct SHTCTL *shtctl;
     struct SHEET *sht_back, *sht_mouse;
     unsigned char *buf_back, *buf_mouse;
+    struct MOUSE_DEC mouseDec;
+
     init_mem();
 
     shtctl = shtctl_init(memmanager, bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
@@ -34,10 +36,22 @@ void HariMain(void) {
     sht_mouse = sheet_alloc(shtctl);
 
     buf_back = (unsigned char *) alloc4k(memmanager, bootInfo->scrnx * bootInfo->scrny);
+    buf_mouse = (unsigned char *) alloc4k(memmanager, 16 * 16);
+
     sheet_setbuf(sht_back, buf_back, bootInfo->scrnx, bootInfo->scrny, COLOR_INV);
+    sheet_setbuf(sht_mouse, buf_mouse, 16, 16, COLOR_INV);
     init_screen(buf_back, bootInfo->scrnx, bootInfo->scrny);
+    init_mouse_cursor(buf_mouse);
+
+    mouseDec.x = 0;
+    mouseDec.y = 0;
+    mouseDec.sx = (bootInfo->scrnx - 16) / 2;
+    mouseDec.sy = (bootInfo->scrny - 16) / 2;
     sheet_slide(sht_back, 0, 0);
+    sheet_slide(sht_mouse, mouseDec.sx, mouseDec.sy);
+
     sheet_updown(sht_back, 1);
+    sheet_updown(sht_mouse, 2);
 
     init_gdtidt();
     init_pic();
@@ -47,6 +61,7 @@ void HariMain(void) {
     init_keyboard(&fifo, 256);
     init_mouse_cursor(mouseBuf);
 
+
     enable_mouse(&fifo, 512);
     dataStream = &fifo;
 
@@ -55,7 +70,7 @@ void HariMain(void) {
 
 
     init_palette();
-  //  init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
+    //  init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
 
 
     timer = timer_alloc();
@@ -72,15 +87,17 @@ void HariMain(void) {
     for (;;) {
         if (fifo32_status(dataStream) != 0) {
             int data = fifo32_get(dataStream);
-            if (data > 100) {
-                boxfill(bootInfo->vram, bootInfo->scrnx, COL8_008484, 20, 30, 100, 50);
-                sprintf(s, "e:%d", data);
-                putStr(bootInfo->vram, bootInfo->scrnx, 20, 30,
-                       COL8_000000, s);
-            } else if (data == 1) {
-                boxfill(bootInfo->vram, bootInfo->scrnx, COL8_008484, 50, 40, 100, 50);
-                putStr(bootInfo->vram, bootInfo->scrnx, 50, 40,
-                       COL8_000000, "5sec");
+            // 鼠标数据
+            if (data >= 512) {
+                data -= 512;
+                mouse_decode(&mouseDec, data);
+                mouseDec.sx += mouseDec.x;
+                mouseDec.sy += mouseDec.y;
+                sheet_slide(sht_mouse, mouseDec.sx, mouseDec.sy);
+            } else if (data >= 256 && data <= 511) {
+
+            } else {
+
             }
         }
     }

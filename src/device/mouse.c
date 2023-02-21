@@ -31,6 +31,7 @@ void enable_mouse(struct FIFO32 *mf, int data) {
 }
 
 
+
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat) {
     if (mdec->phase == 0) {
         if (dat == 0xfa) {

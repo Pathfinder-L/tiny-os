@@ -115,6 +115,7 @@ struct FIFO32 {
 struct MOUSE_DEC {
     unsigned char buf[3], phase;
     int x, y, btn;
+    int sx, sy;
 };
 
 /*nasfunc.nas*/
@@ -329,3 +330,7 @@ void sheet_refresh(struct SHEET *sht, int bx0, int by0, int bx1, int by1);
 void sheet_slide(struct SHEET *sht, int vx0, int vy0);
 
 void sheet_free(struct SHEET *sht);
+
+
+/*mouse.c*/
+int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
