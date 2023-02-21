@@ -22,7 +22,7 @@ BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
 OBJS = main.obj $(BOOTPATH)nasfunc.obj  \
 		 $(CONFIGPATH)config.obj   $(CONFIGPATH)fonts.obj $(CONFIGPATH)memory.obj \
-		 $(GRAPHICPATH)draw.obj \
+		 $(GRAPHICPATH)draw.obj $(GRAPHICPATH)sheet.obj \
 		 $(DEVICEPATH)keyboard.obj $(DEVICEPATH)mouse.obj $(DEVICEPATH)int.obj $(DEVICEPATH)dsctbl.obj  $(DEVICEPATH)timer.obj	 \
 		 $(STRUCTRUEPATH)fifo.obj
 

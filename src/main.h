@@ -2,6 +2,7 @@
 #define true 1
 #define false 0
 #define ADDRESS_BOOTINFO 0X00000ff0
+#define COLOR_INV 99
 
 /*定义颜色*/
 #define COL8_000000        0
@@ -66,10 +67,10 @@ struct BOOTINFO {
 
 /*多认为*/
 
-#define MAX_TASKS		1000	/* 嵟戝僞僗僋悢 */
-#define TASK_GDT0		3		/* TSS傪GDT偺壗斣偐傜妱傝摉偰傞偺偐 */
-#define MAX_TASKS_LV	100
-#define MAX_TASKLEVELS	10
+#define MAX_TASKS        1000    /* 嵟戝僞僗僋悢 */
+#define TASK_GDT0        3        /* TSS傪GDT偺壗斣偐傜妱傝摉偰傞偺偐 */
+#define MAX_TASKS_LV    100
+#define MAX_TASKLEVELS    10
 struct TSS32 {
     int backlink, esp0, ss0, esp1, ss1, esp2, ss2, cr3;
     int eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;
@@ -141,6 +142,7 @@ int load_cr0(void);
 
 void store_cr0(int cr0);
 
+void farjmp(int eip, int cs);
 
 /*graphic.c*/
 void init_palette(void);
@@ -154,6 +156,10 @@ void boxfill(unsigned char *vram, int xSize, unsigned char c, int x0, int y0, in
 void putStr(unsigned char *vram, int xSize, int x, int y, char c, unsigned char *s);
 
 void putFont(char *vram, int xSize, int x, int y, char c, char *font);
+
+// 鼠标图案
+void init_mouse_cursor(unsigned char *mouse);
+
 
 /*int.c*/
 void init_pic(void);
@@ -282,3 +288,44 @@ void task_run(struct TASK *task, int level, int priority);
 void task_switch(void);
 
 void task_sleep(struct TASK *task);
+
+
+/*sheet.c*/
+#define MAX_SHEETS        256
+struct SHEET {
+    unsigned char *buf;
+
+    // 怎么去表示定位一个 图层
+    // bxSize,bySize 分别表示图层的横长度和宽长度
+    // vx0, vy0 表示 相对于图层的偏移
+
+    int bxsize, bysize, vx0, vy0, col_inv, height, flags;
+    struct SHTCTL *ctl;
+};
+
+struct SHTCTL {
+    unsigned char *vram, *map;
+    int xsize, ysize, top;
+
+    struct SHEET *sheets[MAX_SHEETS];
+    struct SHEET sheets0[MAX_SHEETS];
+};
+
+
+struct SHTCTL *shtctl_init(struct MEMMANAGER *memman, unsigned char *vram, int xSize, int ySize);
+
+struct SHEET *sheet_alloc(struct SHTCTL *ctl);
+
+void sheet_setbuf(struct SHEET *sht, unsigned char *buf, int xsize, int ysize, int col_inv);
+
+void sheet_refreshmap(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, int h0);
+
+void sheet_refreshsub(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, int h0, int h1);
+
+void sheet_updown(struct SHEET *sht, int height);
+
+void sheet_refresh(struct SHEET *sht, int bx0, int by0, int bx1, int by1);
+
+void sheet_slide(struct SHEET *sht, int vx0, int vy0);
+
+void sheet_free(struct SHEET *sht);

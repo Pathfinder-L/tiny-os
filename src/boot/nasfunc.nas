@@ -13,6 +13,7 @@
 		GLOBAL	_load_gdtr, _load_idtr , _store_cr0 ,_load_cr0
 		GLOBAL	_asm_inthandler21, _asm_inthandler27, _asm_inthandler2c,_asm_inthandler20
 		GLOBAL  _memtest_sub
+		GLOBAL	_farjmp
 		EXTERN	_inthandler21, _inthandler27, _inthandler2c,_inthandler20
 
 [SECTION .text]
@@ -203,4 +204,8 @@ _load_cr0:		; int load_cr0(void);
 _store_cr0:		; void store_cr0(int cr0);
 		MOV		EAX,[ESP+4]
 		MOV		CR0,EAX
+		RET
+
+_farjmp:		; void farjmp(int eip, int cs);
+		JMP		FAR	[ESP+4]				; eip, cs
 		RET

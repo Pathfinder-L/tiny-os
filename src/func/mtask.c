@@ -1,20 +1,14 @@
-/*多任务*/
-
-/* �}���`�^�X�N�֌W */
-
-#include "bootpack.h"
+#include "../main.h"
 
 struct TASKCTL *taskctl;
 struct TIMER *task_timer;
 
-struct TASK *task_now(void)
-{
+struct TASK *task_now(void) {
     struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];
     return tl->tasks[tl->now];
 }
 
-void task_add(struct TASK *task)
-{
+void task_add(struct TASK *task) {
     struct TASKLEVEL *tl = &taskctl->level[task->level];
     tl->tasks[tl->running] = task;
     tl->running++;
@@ -22,8 +16,7 @@ void task_add(struct TASK *task)
     return;
 }
 
-void task_remove(struct TASK *task)
-{
+void task_remove(struct TASK *task) {
     int i;
     struct TASKLEVEL *tl = &taskctl->level[task->level];
 
@@ -49,8 +42,7 @@ void task_remove(struct TASK *task)
     return;
 }
 
-void task_switchsub(void)
-{
+void task_switchsub(void) {
     int i;
 
     for (i = 0; i < MAX_TASKLEVELS; i++) {
@@ -63,12 +55,11 @@ void task_switchsub(void)
     return;
 }
 
-struct TASK *task_init(struct MEMMAN *memman)
-{
+struct TASK *task_init(struct MEMMAN *memman) {
     int i;
     struct TASK *task;
     struct SEGMENT_DESCRIPTOR *gdt = (struct SEGMENT_DESCRIPTOR *) ADR_GDT;
-    taskctl = (struct TASKCTL *) memman_alloc_4k(memman, sizeof (struct TASKCTL));
+    taskctl = (struct TASKCTL *) memman_alloc_4k(memman, sizeof(struct TASKCTL));
     for (i = 0; i < MAX_TASKS; i++) {
         taskctl->tasks0[i].flags = 0;
         taskctl->tasks0[i].sel = (TASK_GDT0 + i) * 8;
@@ -90,8 +81,7 @@ struct TASK *task_init(struct MEMMAN *memman)
     return task;
 }
 
-struct TASK *task_alloc(void)
-{
+struct TASK *task_alloc(void) {
     int i;
     struct TASK *task;
     for (i = 0; i < MAX_TASKS; i++) {
@@ -118,8 +108,7 @@ struct TASK *task_alloc(void)
     return 0;
 }
 
-void task_run(struct TASK *task, int level, int priority)
-{
+void task_run(struct TASK *task, int level, int priority) {
     if (level < 0) {
         level = task->level;
     }
@@ -139,8 +128,7 @@ void task_run(struct TASK *task, int level, int priority)
     return;
 }
 
-void task_sleep(struct TASK *task)
-{
+void task_sleep(struct TASK *task) {
     struct TASK *now_task;
     if (task->flags == 2) {
         now_task = task_now();
@@ -154,8 +142,7 @@ void task_sleep(struct TASK *task)
     return;
 }
 
-void task_switch(void)
-{
+void task_switch(void) {
     struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];
     struct TASK *new_task, *now_task = tl->tasks[tl->now];
     tl->now++;

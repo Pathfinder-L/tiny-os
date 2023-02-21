@@ -12,10 +12,10 @@ extern struct BOOTINFO *bootInfo;
 extern struct MEMMANAGER *memmanager;
 struct MOUSE_DEC mdec;
 struct FIFO32 *dataStream;
-// 没有加入内存 ！！
-// todo: 0.将数据放入队列  t: 测试数据是否放入成功
-//       1.解析鼠标数据
-//       2.解析键盘数据
+
+
+// todo: 1. 解析鼠标数据 绘制 鼠标
+//
 
 void HariMain(void) {
 
@@ -23,7 +23,21 @@ void HariMain(void) {
     struct TIMER *timer, *timer2, *timer3;
     int fifobuf[128];
     char s[12];
+    char mouseBuf[256];
+    struct SHTCTL *shtctl;
+    struct SHEET *sht_back, *sht_mouse;
+    unsigned char *buf_back, *buf_mouse;
+    init_mem();
 
+    shtctl = shtctl_init(memmanager, bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
+    sht_back = sheet_alloc(shtctl);
+    sht_mouse = sheet_alloc(shtctl);
+
+    buf_back = (unsigned char *) alloc4k(memmanager, bootInfo->scrnx * bootInfo->scrny);
+    sheet_setbuf(sht_back, buf_back, bootInfo->scrnx, bootInfo->scrny, COLOR_INV);
+    init_screen(buf_back, bootInfo->scrnx, bootInfo->scrny);
+    sheet_slide(sht_back, 0, 0);
+    sheet_updown(sht_back, 1);
 
     init_gdtidt();
     init_pic();
@@ -31,15 +45,17 @@ void HariMain(void) {
     init_pit();
     fifo32_init(&fifo, 128, fifobuf);
     init_keyboard(&fifo, 256);
+    init_mouse_cursor(mouseBuf);
+
     enable_mouse(&fifo, 512);
     dataStream = &fifo;
 
     io_out8(PIC0_IMR, 0xf8);
     io_out8(PIC1_IMR, 0xef);
 
-    init_mem();
+
     init_palette();
-    init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
+  //  init_screen(bootInfo->vram, bootInfo->scrnx, bootInfo->scrny);
 
 
     timer = timer_alloc();
@@ -61,8 +77,7 @@ void HariMain(void) {
                 sprintf(s, "e:%d", data);
                 putStr(bootInfo->vram, bootInfo->scrnx, 20, 30,
                        COL8_000000, s);
-            }else if(data == 1)
-            {
+            } else if (data == 1) {
                 boxfill(bootInfo->vram, bootInfo->scrnx, COL8_008484, 50, 40, 100, 50);
                 putStr(bootInfo->vram, bootInfo->scrnx, 50, 40,
                        COL8_000000, "5sec");
