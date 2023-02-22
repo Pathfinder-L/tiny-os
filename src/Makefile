@@ -9,6 +9,7 @@ GRAPHICPATH =$(TOP)/graphic/
 CONFIGPATH = $(TOP)/config/
 DEVICEPATH = $(TOP)/device/
 STRUCTRUEPATH = $(TOP)/structrue/
+FUNCPATH = $(TOP)/func/
 
 COPY     = copy
 DEL      = del
@@ -22,10 +23,10 @@ BIM2HRB  = $(TOOLPATH)\bim2hrb.exe
 
 OBJS = main.obj $(BOOTPATH)nasfunc.obj  \
 		 $(CONFIGPATH)config.obj   $(CONFIGPATH)fonts.obj $(CONFIGPATH)memory.obj \
-		 $(GRAPHICPATH)draw.obj $(GRAPHICPATH)sheet.obj \
+		 $(GRAPHICPATH)draw.obj $(GRAPHICPATH)sheet.obj  $(GRAPHICPATH)window.obj \
 		 $(DEVICEPATH)keyboard.obj $(DEVICEPATH)mouse.obj $(DEVICEPATH)int.obj $(DEVICEPATH)dsctbl.obj  $(DEVICEPATH)timer.obj	 \
-		 $(STRUCTRUEPATH)fifo.obj
-
+		 $(STRUCTRUEPATH)fifo.obj \
+		 $(FUNCPATH)mtask.obj
 
 
 %.gas : %.c main.h Makefile

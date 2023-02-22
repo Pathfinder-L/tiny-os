@@ -197,6 +197,11 @@ _asm_inthandler20:
 		POP		ES
 		IRETD
 
+
+_load_tr:		; void load_tr(int tr);
+		LTR		[ESP+4]			; tr
+		RET
+
 _load_cr0:		; int load_cr0(void);
 		MOV		EAX,CR0
 		RET

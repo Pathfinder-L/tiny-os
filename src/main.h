@@ -141,6 +141,8 @@ void load_idtr(int limit, int address);
 
 int load_cr0(void);
 
+void load_tr(int tr);
+
 void store_cr0(int cr0);
 
 void farjmp(int eip, int cs);
@@ -290,6 +292,11 @@ void task_switch(void);
 
 void task_sleep(struct TASK *task);
 
+void task_add(struct TASK *task);
+
+void task_remove(struct TASK *task);
+
+
 
 /*sheet.c*/
 #define MAX_SHEETS        256
@@ -334,3 +341,13 @@ void sheet_free(struct SHEET *sht);
 
 /*mouse.c*/
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
+
+
+/*window.c*/
+void make_window(unsigned char *buf, int xsize, int ysize, char *title, char act);
+
+void make_title(unsigned char *buf, int xsize, char *title, char act);
+
+void putOnSheet(struct SHEET *sht, int x, int y, int c, int b, char *s, int l);
+
+void make_textbox(struct SHEET *sht, int x0, int y0, int sx, int sy, int c);

@@ -35,8 +35,8 @@ void HariMain(void) {
     char s[12];
     char mouseBuf[256];
     struct SHTCTL *shtctl;
-    struct SHEET *sht_back, *sht_mouse;
-    unsigned char *buf_back, *buf_mouse;
+    struct SHEET *sht_back, *sht_mouse, *sht_win;
+    unsigned char *buf_back, *buf_mouse, *buf_win;
     struct MOUSE_DEC mouseDec;
 
     init_mem();
@@ -62,8 +62,6 @@ void HariMain(void) {
     sheet_slide(sht_back, 0, 0);
     sheet_slide(sht_mouse, mouseDec.sx, mouseDec.sy);
 
-    sheet_updown(sht_back, 1);
-    sheet_updown(sht_mouse, 2);
 
     init_gdtidt();
     init_pic();
@@ -96,6 +94,18 @@ void HariMain(void) {
     timer_settime(timer3, 500);
 
     s[0] = keyTable[3];
+
+
+    sht_win = sheet_alloc(shtctl);
+    buf_win = (unsigned char *) alloc4k(memmanager, 160 * 52);
+    sheet_setbuf(sht_win, buf_win, 144, 52, -1);
+    make_window(buf_win, 144, 52, "task_a", 1);
+    make_textbox(sht_win, 8, 28, 128, 16, COL8_FFFFFF);
+    sheet_slide(sht_win, bootInfo->scrnx / 4, bootInfo->scrny / 4);
+    sheet_updown(sht_back, 1);
+    sheet_updown(sht_mouse, 2);
+    sheet_updown(sht_win, 3);
+
 
     for (;;) {
         if (fifo32_status(dataStream) != 0) {
