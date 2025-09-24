@@ -17,6 +17,8 @@ jobs:
       - name: Mirror to Gitee
         uses: Yikun/hub-mirror-action@master
         with:
-          src: github/Pathfinder-L/tiny-os # 替换为你的 GitHub 仓库路径
-          dst: gitee/luo-ruidong/hub-mirror-action  # 替换为你的 Gitee 仓库路径
+          src: github/Pathfinder-L/tiny-os  # 源仓库路径
+          dst: gitee.com/luo-ruidong/tiny-os  # 修正后的目标仓库路径
           dst_key: ${{ secrets.GITEE_TOKEN }}  # 使用 Gitee 的个人访问令牌
+          force_update: true  # 强制更新
+          static_list: "main"  # 只同步 main 分支
