@@ -18,5 +18,5 @@ jobs:
         uses: Yikun/hub-mirror-action@master
         with:
           src: github/Pathfinder-L/tiny-os # 替换为你的 GitHub 仓库路径
-          dst: gitee.com/luo-ruidong/hub-mirror-action  # 替换为你的 Gitee 仓库路径
+          dst: gitee/luo-ruidong/hub-mirror-action  # 替换为你的 Gitee 仓库路径
           dst_key: ${{ secrets.GITEE_TOKEN }}  # 使用 Gitee 的个人访问令牌
