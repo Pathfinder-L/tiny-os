@@ -18,7 +18,7 @@ jobs:
         uses: Yikun/hub-mirror-action@master
         with:
           src: github/Pathfinder-L  # 源仓库路径
-          dst: gitee.com/luo-ruidong  # 修正后的目标仓库路径
+          dst: gitee/luo-ruidong  # 修正后的目标仓库路径
           dst_key: ${{ secrets.GITEE_TOKEN }}  # 使用 Gitee 的个人访问令牌
           force_update: true  # 强制更新
           static_list: "tiny-os"  # 只同步 main 分支
