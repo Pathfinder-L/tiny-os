@@ -19,7 +19,7 @@ jobs:
         with:
           src: github/Pathfinder-L  # 源仓库路径
           dst: gitee/luo-ruidong  # 修正后的目标仓库路径
-          dst_key: ${{ secrets.SSH_KEY }}  # 使用 Gitee 的个人访问令牌
+          dst_key: ${{ secrets.GITEE_SSH_KEY }}  # 使用 Gitee 的个人访问令牌
           dst_token: ${{ secrets.GITEE_TOKEN }}
           account_type: user  # 目标仓库类型为个人仓库
 
