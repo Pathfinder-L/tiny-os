@@ -1,0 +1,22 @@
+name: Mirror to Gitee
+
+on:
+  push:
+    branches:
+      - main  # 监听 main 分支的推送事件
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v3
+
+      - name: Mirror to Gitee
+        uses: Yikun/hub-mirror-action@master
+        with:
+          src: github/Pathfinder-L/tiny-os # 替换为你的 GitHub 仓库路径
+          dst: gitee.com/luo-ruidong/hub-mirror-action  # 替换为你的 Gitee 仓库路径
+          dst_key: ${{ secrets.GITEE_TOKEN }}  # 使用 Gitee 的个人访问令牌
